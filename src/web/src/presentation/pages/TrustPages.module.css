@@ -1,0 +1,251 @@
+.page {
+  max-width: 46rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.brandSignal {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--brand);
+}
+
+.page h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  letter-spacing: -0.02em;
+}
+
+.page h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.lead {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 40rem;
+}
+
+.page p,
+.page li {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.page a {
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: 0.35rem;
+  padding: 0.65rem 1.05rem;
+  border-radius: var(--radius-sm);
+  background: var(--brand);
+  color: var(--on-brand) !important;
+  text-decoration: none !important;
+  font-weight: 700;
+  box-shadow: var(--shadow-cta);
+}
+
+.cta:hover {
+  background: var(--brand-strong);
+}
+
+.steps {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.stepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.steps h2 {
+  margin-bottom: 0.25rem;
+  color: var(--ink);
+}
+
+.faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.faq > h2 {
+  margin-bottom: 0.25rem;
+  color: var(--ink);
+}
+
+.faqItem {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 0.15rem 0.9rem;
+}
+
+.faqItem summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.85rem 0;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.faqItem summary::-webkit-details-marker {
+  display: none;
+}
+
+.faqItem[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.faqItem p {
+  padding: 0.75rem 0 0.95rem;
+}
+
+.ctaBand {
+  margin-top: 0.75rem;
+  padding: 1.35rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--hero-panel);
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.ctaBand h2 {
+  color: #f8fafc;
+}
+
+.ctaBand p {
+  color: rgba(248, 250, 252, 0.82);
+}
+
+.ctaBand .cta {
+  background: #fff;
+  color: #0f766e !important;
+  box-shadow: none;
+}
+
+.privacyPanel {
+  margin: 0.35rem 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.privacyList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.privacyList div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.privacyList dt {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.privacyList dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.sessionCode {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  padding: 0.12rem 0.35rem;
+  border-radius: 0.3rem;
+  background: var(--chip-bg);
+}
+
+.privacyActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.secondaryButton {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--ink);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  background: var(--brand-soft);
+}
+
+.secondaryButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.actionMessage {
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: var(--brand-soft);
+  color: var(--ink);
+  font-size: 0.88rem;
+}

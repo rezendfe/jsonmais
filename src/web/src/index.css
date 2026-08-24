@@ -1,0 +1,110 @@
+:root,
+html[data-theme='light'] {
+  --font-sans: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --font-display: 'Outfit', 'Segoe UI', sans-serif;
+  --ink: #0b1220;
+  --muted: #5b6b7c;
+  --brand: #0f766e;
+  --brand-strong: #0d9488;
+  --brand-soft: rgba(15, 118, 110, 0.12);
+  --on-brand: #ffffff;
+  --border: rgba(15, 23, 42, 0.1);
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --toolbar-bg: #f1f5f9;
+  --input-bg: #ffffff;
+  --panel-bg: #ffffff;
+  --code-bg: rgba(15, 23, 42, 0.04);
+  --chip-bg: rgba(15, 118, 110, 0.08);
+  --footer-bg: #0b1220;
+  --footer-ink: #e2e8f0;
+  --footer-muted: #94a3b8;
+  --danger: #b42318;
+  --radius-sm: 0.4rem;
+  --radius-md: 0.65rem;
+  --radius-lg: 1rem;
+  --shadow-card: 0 10px 30px rgba(15, 23, 42, 0.06);
+  --shadow-cta: 0 8px 20px rgba(15, 118, 110, 0.22);
+  --shell-bg:
+    radial-gradient(900px 420px at 12% -8%, rgba(13, 148, 136, 0.16), transparent 55%),
+    radial-gradient(700px 380px at 92% 8%, rgba(14, 165, 233, 0.1), transparent 50%),
+    linear-gradient(180deg, #f7fafc 0%, #eef3f7 100%);
+  --header-bg: rgba(255, 255, 255, 0.86);
+  --hero-panel: linear-gradient(145deg, #0f766e 0%, #0e7490 55%, #155e75 100%);
+  --header-h: 72px;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  color: var(--ink);
+  background-color: #f7fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  --ink: #e8eef6;
+  --muted: #9aa8b8;
+  --brand: #2dd4bf;
+  --brand-strong: #5eead4;
+  --brand-soft: rgba(45, 212, 191, 0.14);
+  --on-brand: #042f2e;
+  --border: rgba(148, 163, 184, 0.22);
+  --surface: #0f172a;
+  --surface-elevated: #111827;
+  --toolbar-bg: #111827;
+  --input-bg: #1e293b;
+  --panel-bg: #0f172a;
+  --code-bg: rgba(148, 163, 184, 0.08);
+  --chip-bg: rgba(45, 212, 191, 0.12);
+  --footer-bg: #020617;
+  --footer-ink: #e2e8f0;
+  --footer-muted: #94a3b8;
+  --danger: #f87171;
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.35);
+  --shadow-cta: 0 8px 22px rgba(45, 212, 191, 0.2);
+  --shell-bg:
+    radial-gradient(900px 420px at 10% -10%, rgba(45, 212, 191, 0.14), transparent 55%),
+    radial-gradient(700px 380px at 95% 0%, rgba(56, 189, 248, 0.08), transparent 50%),
+    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+  --header-bg: rgba(15, 23, 42, 0.9);
+  --hero-panel: linear-gradient(145deg, #115e59 0%, #0e7490 55%, #164e63 100%);
+  background-color: #0b1220;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: transparent;
+  color: var(--ink);
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

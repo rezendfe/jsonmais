@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/JsonMais.Domain.Tests/JsonMais.Domain.Tests.csproj" />
+  </Folder>
+  <Project Path="JsonMais.Application/JsonMais.Application.csproj" />
+  <Project Path="JsonMais.Domain/JsonMais.Domain.csproj" />
+  <Project Path="JsonMais.Infrastructure/JsonMais.Infrastructure.csproj" />
+  <Project Path="JsonMais.Web/JsonMais.Web.csproj" />
+</Solution>

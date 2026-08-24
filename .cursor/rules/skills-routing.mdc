@@ -1,0 +1,21 @@
+---
+description: Roteamento Spec → Skill JSON Mais
+alwaysApply: true
+---
+
+# Skills routing
+
+| Spec / tema | Skill |
+|-------------|-------|
+| Qualquer feature / specs | `jsonmais-portal-sdd` |
+| `000-foundation`, Program.cs, Vite shell | `jsonmais-portal-foundation` |
+| `001-json-editor`, vanilla-jsoneditor | `jsonmais-portal-json-editor` |
+| `004-developer-toolbox` | `jsonmais-portal-developer-toolbox` |
+| `005-toolbox-r2` | `jsonmais-portal-developer-toolbox` |
+| `009-toolbox-r3` | `jsonmais-portal-developer-toolbox` |
+| `002` sessão | `jsonmais-portal-session-privacy` |
+| `003` CMP | `jsonmais-portal-cookies-ads` |
+| `009` Azure | `jsonmais-portal-azure` |
+| `010` NFR | `jsonmais-portal-security`, `jsonmais-portal-performance`, `jsonmais-portal-resilience` |
+
+Índice: `.cursor/skills/README.md`.

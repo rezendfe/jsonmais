@@ -1,0 +1,26 @@
+---
+description: Núcleo do produto JSON Mais Portal — JSON no cliente vs PDFMais
+alwaysApply: true
+---
+
+# JSON Mais Portal — Core
+
+## Produto
+
+- Portal web de editor JSON (paridade observável com JSON Editor Online)
+- Marca: Soluções Simples / JSON Mais
+- Sem cadastro; sem API deployável; documento JSON nunca sai do browser
+
+## Não confundir com PDFMais
+
+| JSON Mais | PDF Mais |
+|-----------|----------|
+| Parse/edit no browser | Upload → job no servidor |
+| Dual-panel editor | Hub de ferramentas PDF |
+| localStorage do documento | Blob efêmero `sessions/{id}/` |
+
+Constituição canônica: `AGENTS.md` deste repositório.
+
+## Locale MVP
+
+Português (pt-BR).

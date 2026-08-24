@@ -1,0 +1,30 @@
+---
+description: Workflow Spec-driven Development — ordem de leitura e gates (JSON Mais)
+alwaysApply: true
+---
+
+# Workflow SDD — JSON Mais Portal
+
+## Ordem de leitura obrigatória
+
+1. `AGENTS.md` — constituição (prevalece sobre tudo)
+2. `.specify/memory/constitution.md` — espelho Speckit
+3. `specs/NNN-feature/spec.md` — requisitos
+4. `specs/NNN-feature/plan.md` — plano + Constitution Check
+5. `architecture.md`, `data-model.md`, `research.md`, `contracts/` — design
+6. `tasks.md` — só então implementar
+
+## Regras
+
+- NÃO escrever código React/.NET/infra sem `tasks.md` da feature correspondente
+- Ao concluir uma task, marcar em `tasks.md` e manter rastreio RF/US
+- Em dúvida de escopo, `spec.md` Out of Scope e Assumptions vencem
+- Atualizar ADRs se uma decisão arquitetural mudar
+- NÃO aplicar constituição do PDFMais (jobs/Blob de PDF) ao documento JSON
+
+## Gates
+
+- Build API + web limpos (quando houver código)
+- Testes Domain C# e `shared/json` passando
+- Checklist da feature atendido
+- Skill de domínio consultado

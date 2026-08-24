@@ -1,0 +1,81 @@
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.35rem;
+  width: 5.75rem;
+  flex-shrink: 0;
+  padding: 0.75rem 0.4rem;
+  background: var(--toolbar-bg);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.01em;
+}
+
+.row {
+  display: flex;
+  gap: 0.28rem;
+}
+
+.iconButton,
+.compareButton {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.iconButton {
+  width: 1.85rem;
+  height: 1.85rem;
+  padding: 0;
+}
+
+.compareButton {
+  gap: 0.28rem;
+  width: 100%;
+  height: 1.85rem;
+  padding: 0 0.35rem;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.iconButton:hover,
+.compareButton:hover {
+  background: var(--brand-soft);
+}
+
+.iconButton:focus-visible,
+.compareButton:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.compareActive {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+}

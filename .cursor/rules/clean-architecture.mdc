@@ -1,0 +1,37 @@
+---
+description: Clean Architecture e Hexagonal — React + ASP.NET Core (JSON Mais)
+globs: "src/**/*.{cs,ts,tsx}"
+alwaysApply: false
+---
+
+# Clean Architecture + Hexagonal (JSON Mais)
+
+## Onde colocar código
+
+| Tipo | Camada | Pasta |
+|------|--------|-------|
+| Entity / VO | Domain | `src/api/JsonMais.Domain/` |
+| Port | Application | `src/api/JsonMais.Application/Ports/` |
+| Use Case | Application | `.../Application/UseCases/` |
+| Adapter | Infrastructure | `src/api/JsonMais.Infrastructure/` |
+| Minimal APIs | Web | `src/api/JsonMais.Web/` |
+| Pages / editor UI | Presentation | `src/web/src/presentation/` |
+| Domínio JSON (TS) | Shared | `src/web/src/shared/json/` |
+| API clients | Shared | `src/web/src/shared/api/` |
+| Router | Composition | `src/web/src/composition/` |
+
+## Regra de dependência
+
+```text
+React presentation → shared/json (domínio) + vanilla-jsoneditor (adapter UI)
+React presentation → API HTTP (health/sessão)
+Web → Application → Domain
+Infrastructure → Application/Domain
+shared/json → (nada de React, nada do motor visual)
+```
+
+## Testes
+
+- Domain C#: SessionId / SessionRecord sem ASP.NET
+- `shared/json`: format, compact, diff, persistência — Vitest, sem DOM
+- React: workspace do editor sem chamar API para o documento

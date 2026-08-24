@@ -1,0 +1,182 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border, rgba(15, 23, 42, 0.12));
+  background: var(--panel-bg, rgba(255, 255, 255, 0.88));
+  padding: 0.55rem 0.75rem 0.75rem;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.accordionItem {
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.12));
+  border-radius: var(--radius-sm, 0.4rem);
+  overflow: hidden;
+  background: var(--input-bg, #fff);
+}
+
+.accordionTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 0.38rem 0.65rem;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordionTrigger:hover {
+  background: var(--chip-bg, rgba(15, 23, 42, 0.04));
+}
+
+.accordionTriggerOpen {
+  background: var(--brand-soft, rgba(15, 118, 110, 0.08));
+  color: var(--brand);
+}
+
+.accordionTrigger:disabled {
+  cursor: default;
+}
+
+.accordionIcon {
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.accordionPanel {
+  border-top: 1px solid var(--border, rgba(15, 23, 42, 0.08));
+  padding: 0.55rem 0.65rem 0.65rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 0;
+}
+
+.stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.4rem 0.75rem;
+}
+
+.stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  background: var(--chip-bg, rgba(15, 23, 42, 0.04));
+  border-radius: 0.35rem;
+}
+
+.stats dt {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.stats dd {
+  margin: 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 5.5rem;
+}
+
+.input,
+.inputGrow {
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.16));
+  background: var(--input-bg, #fff);
+  color: var(--ink);
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.inputGrow {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.button,
+.buttonPrimary {
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.16));
+  background: var(--input-bg, #fff);
+  color: var(--ink);
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.buttonPrimary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand, #fff);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.textarea,
+.output {
+  width: 100%;
+  min-height: 8rem;
+  margin: 0;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.14));
+  border-radius: 0.4rem;
+  padding: 0.55rem 0.65rem;
+  background: var(--code-bg, #0f172a0a);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+.hint,
+.ok,
+.error {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.ok {
+  color: var(--brand);
+}
+
+.error {
+  color: var(--danger, #b42318);
+}

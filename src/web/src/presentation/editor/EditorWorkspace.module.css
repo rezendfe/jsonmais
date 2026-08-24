@@ -1,0 +1,108 @@
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.editorViewport {
+  flex: 0 0 auto;
+  height: calc(100dvh - var(--header-h, 72px));
+  min-height: calc(100dvh - var(--header-h, 72px));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  background: var(--surface, #fff);
+}
+
+.belowFold {
+  flex: 0 0 auto;
+  scroll-margin-top: calc(var(--header-h, 72px) + 0.5rem);
+  padding-bottom: 1rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid var(--border, rgba(15, 23, 42, 0.08));
+  background: var(--toolbar-bg, #f8fafc);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.sep {
+  width: 1px;
+  height: 1.4rem;
+  background: var(--border);
+}
+
+.button,
+.selectFile {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--input-bg, #fff);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.28rem 0.55rem;
+  border-radius: var(--radius-sm, 0.4rem);
+  cursor: pointer;
+}
+
+.button[aria-pressed='true'] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand, #fff);
+}
+
+.button:hover {
+  background: var(--brand-soft);
+}
+
+.panels {
+  display: grid;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pane {
+  min-width: 0;
+  min-height: 0;
+}
+
+.paneDropActive {
+  outline: 2px dashed var(--brand);
+  outline-offset: -2px;
+  background: var(--brand-soft);
+}
+
+.split {
+  cursor: col-resize;
+  background: var(--border);
+  border: 0;
+  padding: 0;
+}
+
+.split:hover {
+  background: var(--brand);
+}
+
+.status {
+  border-top: 1px solid var(--border);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.error {
+  color: var(--danger, #b91c1c);
+}
