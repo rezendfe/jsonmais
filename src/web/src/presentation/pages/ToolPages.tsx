@@ -10,12 +10,6 @@ export { TOOL_CATALOG } from './toolCatalog'
 const TOOL_COUNT = `${TOOL_CATALOG.length}+`
 const CHIPS = [`${TOOL_COUNT} ferramentas`, '100% no browser', 'Sem cadastro', 'Local-first']
 
-const STATS = [
-  { value: String(TOOL_CATALOG.length), caption: 'ferramentas no catálogo SEO' },
-  { value: '0', caption: 'uploads de JSON ao servidor' },
-  { value: '2', caption: 'painéis lado a lado no editor' },
-]
-
 const CATEGORY_ORDER: ToolCategory[] = [
   'Analisar',
   'Consultar',
@@ -121,21 +115,6 @@ export function ToolsIndexPage() {
           </ul>
         </div>
         <EditorMock />
-      </section>
-
-      <section className={styles.stats} aria-label="Por que ficar">
-        <div className={styles.statsIntro}>
-          <h2>Ferramentas simples que poupam tempo</h2>
-          <p>Pipeline local-first: editar → validar → consultar → converter → gerar código.</p>
-        </div>
-        <ul className={styles.statsGrid}>
-          {STATS.map((stat) => (
-            <li key={stat.caption}>
-              <strong>{stat.value}</strong>
-              <span>{stat.caption}</span>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <section className={styles.catalog}>

@@ -151,12 +151,6 @@
   background: rgba(255, 255, 255, 0.22);
 }
 
-.stats {
-  display: grid;
-  gap: 1.25rem;
-}
-
-.statsIntro h2,
 .sectionHead h2,
 .bottomCta h2 {
   margin: 0 0 0.35rem;
@@ -165,40 +159,10 @@
   letter-spacing: -0.02em;
 }
 
-.statsIntro p,
 .sectionHead p,
 .bottomCta p {
   margin: 0;
   color: var(--muted);
-}
-
-.statsGrid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.85rem;
-}
-
-.statsGrid li {
-  padding: 1rem 1.1rem;
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-
-.statsGrid strong {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 2rem;
-  line-height: 1.1;
-  color: var(--brand);
-}
-
-.statsGrid span {
-  color: var(--muted);
-  font-size: 0.9rem;
 }
 
 .catalog {
@@ -436,10 +400,6 @@
   .cardGrid,
   .stepsList {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .statsGrid {
-    grid-template-columns: 1fr;
   }
 }
 
