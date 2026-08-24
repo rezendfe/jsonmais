@@ -9,7 +9,7 @@ Repositório GitHub: [rezendfe/jsonmais](https://github.com/rezendfe/jsonmais.gi
 | Item | Valor |
 |------|-------|
 | Recurso | `green-stone-0167ed410` |
-| URL padrão | https://green-stone-0167ed410.azurestaticapps.net |
+| URL padrão | https://green-stone-0167ed410.7.azurestaticapps.net |
 | Workflow | `.github/workflows/azure-static-web-apps-green-stone-0167ed410.yml` |
 | App source | `src/web` |
 | Build output | `dist` |
