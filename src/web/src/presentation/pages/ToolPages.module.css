@@ -9,7 +9,7 @@
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   gap: 1.75rem;
   align-items: center;
-  min-height: min(72vh, 36rem);
+  min-height: min(36vh, 18rem);
 }
 
 .heroCopy {
