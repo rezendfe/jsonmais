@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from 'react'
+import { useLocale } from '../../composition/LocaleProvider'
 import styles from './ResultModal.module.css'
 
 export type ResultModalProps = {
@@ -24,6 +25,7 @@ export function ResultModal({
   onDownload,
   onClose,
 }: ResultModalProps) {
+  const { t } = useLocale()
   const titleId = useId()
   const closeRef = useRef<HTMLButtonElement>(null)
 
@@ -55,27 +57,37 @@ export function ResultModal({
           <h2 id={titleId} className={styles.title}>
             {title}
           </h2>
-          <button ref={closeRef} type="button" className={styles.close} onClick={onClose} aria-label="Fechar">
+          <button
+            ref={closeRef}
+            type="button"
+            className={styles.close}
+            onClick={onClose}
+            aria-label={t('common.close')}
+          >
             ×
           </button>
         </header>
         <textarea className={styles.body} value={text} readOnly aria-label={title} />
         <footer className={styles.footer}>
           <button type="button" className={styles.button} onClick={() => onCopy(text)}>
-            Copiar
+            {t('common.copy')}
           </button>
           {onDownload && downloadFilename ? (
-            <button type="button" className={styles.buttonPrimary} onClick={() => onDownload(text, downloadFilename)}>
-              Baixar
+            <button
+              type="button"
+              className={styles.buttonPrimary}
+              onClick={() => onDownload(text, downloadFilename)}
+            >
+              {t('common.download')}
             </button>
           ) : null}
           {showSendToRight ? (
             <button type="button" className={styles.buttonPrimary} onClick={() => onSend?.(text)}>
-              Enviar à direita
+              {t('common.sendRight')}
             </button>
           ) : null}
           <button type="button" className={styles.button} onClick={onClose}>
-            Fechar
+            {t('common.close')}
           </button>
         </footer>
       </div>

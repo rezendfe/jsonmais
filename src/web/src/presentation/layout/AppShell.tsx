@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
+import { useLocale } from '../../composition/LocaleProvider'
+import type { Locale } from '../../shared/i18n'
 import { ensureClientSession } from '../../shared/session/clientSession'
 import {
   applyThemeToDocument,
@@ -10,7 +12,7 @@ import {
 import { AdBannerRow } from '../ads/AdBannerRow'
 import { CookieBanner } from '../consent/CookieBanner'
 import { useConsent } from '../consent/consentContext'
-import { TOOL_CATALOG } from '../pages/toolCatalog'
+import { TOOL_CATALOG, toolTitleKey } from '../pages/toolCatalog'
 import styles from './AppShell.module.css'
 
 const FOOTER_TOOLS = TOOL_CATALOG.slice(0, 6)
@@ -21,6 +23,7 @@ export function AppShell() {
   const [themePref, setThemePref] = useState<ThemePreference>('light')
   const headerRef = useRef<HTMLElement>(null)
   const { openPreferences } = useConsent()
+  const { locale, setLocale, t } = useLocale()
 
   useEffect(() => {
     ensureClientSession(window.localStorage)
@@ -53,7 +56,7 @@ export function AppShell() {
       observer.disconnect()
       window.removeEventListener('resize', syncHeaderHeight)
     }
-  }, [isEditor, themePref])
+  }, [isEditor, themePref, locale])
 
   return (
     <div className={`${styles.shell} ${isEditor ? styles.shellEditor : styles.shellMarketing}`}>
@@ -68,29 +71,41 @@ export function AppShell() {
               height={93}
             />
           </Link>
-          <nav className={styles.nav} aria-label="Principal">
+          <nav className={styles.nav} aria-label={t('shell.nav.main')}>
             <Link className={styles.navLink} to="/">
-              Editor
+              {t('shell.nav.editor')}
             </Link>
             <Link className={styles.navLink} to="/ferramentas">
-              Ferramentas
+              {t('shell.nav.tools')}
             </Link>
             <Link className={styles.navLink} to="/como-funciona">
-              Como funciona
+              {t('shell.nav.how')}
             </Link>
             <Link className={styles.navLink} to="/sobre">
-              Sobre
+              {t('shell.nav.about')}
             </Link>
             <label className={styles.themeLabel}>
-              <span className={styles.themeText}>Tema</span>
+              <span className={styles.themeText}>{t('shell.theme')}</span>
               <select
                 className={styles.themeSelect}
                 value={themePref}
-                aria-label="Tema"
+                aria-label={t('shell.theme')}
                 onChange={(event) => setThemePref(event.target.value as ThemePreference)}
               >
-                <option value="light">Claro</option>
-                <option value="dark">Escuro</option>
+                <option value="light">{t('shell.theme.light')}</option>
+                <option value="dark">{t('shell.theme.dark')}</option>
+              </select>
+            </label>
+            <label className={styles.themeLabel}>
+              <span className={styles.themeText}>{t('shell.lang')}</span>
+              <select
+                className={styles.themeSelect}
+                value={locale}
+                aria-label={t('shell.lang')}
+                onChange={(event) => setLocale(event.target.value as Locale)}
+              >
+                <option value="pt">{t('shell.lang.pt')}</option>
+                <option value="en">{t('shell.lang.en')}</option>
               </select>
             </label>
           </nav>
@@ -102,7 +117,7 @@ export function AppShell() {
       <AdBannerRow
         leftSlotId="bottom_left"
         rightSlotId="bottom_right"
-        label="Anúncios na base"
+        label={t('shell.ads.bottom')}
       />
       <footer className={styles.footer}>
         <div className={styles.footerGrid}>
@@ -114,48 +129,46 @@ export function AppShell() {
               width={123}
               height={96}
             />
-            <p className={styles.footerNote}>
-              Canivete suíço JSON local-first. O documento nunca sai do seu navegador.
-            </p>
+            <p className={styles.footerNote}>{t('shell.footer.tagline')}</p>
           </div>
           <div>
-            <p className={styles.footerHeading}>Produto</p>
-            <nav className={styles.footerCol} aria-label="Produto">
+            <p className={styles.footerHeading}>{t('shell.footer.product')}</p>
+            <nav className={styles.footerCol} aria-label={t('shell.footer.product')}>
               <Link className={styles.footerLink} to="/">
-                Editor dual-panel
+                {t('shell.footer.editor')}
               </Link>
               <Link className={styles.footerLink} to="/ferramentas">
-                Catálogo de ferramentas
+                {t('shell.footer.catalog')}
               </Link>
               <Link className={styles.footerLink} to="/como-funciona">
-                Como funciona
+                {t('shell.footer.how')}
               </Link>
               <Link className={styles.footerLink} to="/sobre">
-                Sobre
+                {t('shell.footer.about')}
               </Link>
             </nav>
           </div>
           <div>
-            <p className={styles.footerHeading}>Ferramentas</p>
-            <nav className={styles.footerCol} aria-label="Ferramentas">
+            <p className={styles.footerHeading}>{t('shell.footer.tools')}</p>
+            <nav className={styles.footerCol} aria-label={t('shell.footer.tools')}>
               {FOOTER_TOOLS.map((tool) => (
                 <Link key={tool.slug} className={styles.footerLink} to={`/ferramentas/${tool.slug}`}>
-                  {tool.title}
+                  {t(toolTitleKey(tool.slug))}
                 </Link>
               ))}
             </nav>
           </div>
           <div>
-            <p className={styles.footerHeading}>Legal</p>
-            <nav className={styles.footerCol} aria-label="Legal">
+            <p className={styles.footerHeading}>{t('shell.footer.legal')}</p>
+            <nav className={styles.footerCol} aria-label={t('shell.footer.legal')}>
               <Link className={styles.footerLink} to="/privacidade">
-                Privacidade
+                {t('shell.footer.privacy')}
               </Link>
               <Link className={styles.footerLink} to="/cookies">
-                Cookies
+                {t('shell.footer.cookies')}
               </Link>
               <button type="button" className={styles.footerButton} onClick={openPreferences}>
-                Gerenciar cookies
+                {t('shell.footer.manageCookies')}
               </button>
               <a
                 className={styles.footerLink}
@@ -168,7 +181,7 @@ export function AppShell() {
             </nav>
           </div>
         </div>
-        <p className={styles.copyright}>© {new Date().getFullYear()} Soluções Simples · JSON Mais</p>
+        <p className={styles.copyright}>{t('shell.footer.copy', { year: new Date().getFullYear() })}</p>
       </footer>
       <CookieBanner />
     </div>

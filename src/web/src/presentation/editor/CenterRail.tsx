@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useLocale } from '../../composition/LocaleProvider'
 import { codeLanguageFilename, generateCode, type CodeLanguage } from '../../shared/json/codegen'
 import {
   csvToJson,
@@ -129,7 +130,12 @@ function CompareIcon() {
   )
 }
 
-function runConvert(from: ConvertFormat, to: ConvertFormat, sourceText: string): ConvertResult {
+function runConvert(
+  from: ConvertFormat,
+  to: ConvertFormat,
+  sourceText: string,
+  unsupported: string,
+): ConvertResult {
   const parsed = tryParseJson(sourceText)
   const mode = `${from}-${to}`
   switch (mode) {
@@ -157,7 +163,7 @@ function runConvert(from: ConvertFormat, to: ConvertFormat, sourceText: string):
       if (parsed.ok === false) return { ok: false, error: parsed.error }
       return jsonToMarkdown(parsed.value)
     default:
-      return { ok: false, error: 'Conversão não suportada.' }
+      return { ok: false, error: unsupported }
   }
 }
 
@@ -173,6 +179,7 @@ export function CenterRail({
   onSendToRight,
   onNotify,
 }: CenterRailProps) {
+  const { t } = useLocale()
   const [convertFrom, setConvertFrom] = useState<ConvertFormat>('json')
   const [convertTo, setConvertTo] = useState<ConvertFormat>('yaml')
   const [language, setLanguage] = useState<CodeLanguage>('typescript')
@@ -216,13 +223,13 @@ export function CenterRail({
   }
 
   const handleConvert = () => {
-    const result = runConvert(convertFrom, convertTo, leftText)
+    const result = runConvert(convertFrom, convertTo, leftText, t('rail.unsupported'))
     if (result.ok === false) {
       notify(result.error)
       return
     }
     onSendToRight(result.text)
-    notify(`Convertido ${CONVERT_LABEL[convertFrom]} → ${CONVERT_LABEL[convertTo]} (direita).`)
+    notify(`${CONVERT_LABEL[convertFrom]} → ${CONVERT_LABEL[convertTo]}`)
   }
 
   const handleQuery = () => {
@@ -234,7 +241,7 @@ export function CenterRail({
       }
       setQueryOpen(false)
       setPopup({
-        title: `Consultar — ${queryEngine === 'jsonpath' ? 'JSONPath' : 'JMESPath'}`,
+        title: t('rail.queryTitle'),
         text: stringifyQueryResult(result.value),
         allowSend: true,
       })
@@ -247,29 +254,29 @@ export function CenterRail({
         case 'flatten':
           withParsedLeft((value) => {
             onSendToRight(`${JSON.stringify(flatten(value), null, 2)}\n`)
-            notify('Flatten enviado à direita.')
+            notify(t('rail.flattenOk'))
           })
           return
         case 'unflatten':
           withParsedLeft((value) => {
             if (value === null || typeof value !== 'object' || Array.isArray(value)) {
-              notify('Unflatten exige um objeto plano.')
+              notify(t('tb.unflattenNeed'))
               return
             }
             onSendToRight(`${JSON.stringify(unflatten(value as Record<string, unknown>), null, 2)}\n`)
-            notify('Unflatten enviado à direita.')
+            notify(t('rail.unflattenOk'))
           })
           return
         case 'sort-keys':
           withParsedLeft((value) => {
             onSendToRight(`${JSON.stringify(sortKeys(value, sortDir), null, 2)}\n`)
-            notify('Chaves ordenadas (direita).')
+            notify(t('tb.sortKeysOk'))
           })
           return
         case 'sort-array':
           withParsedLeft((value) => {
             onSendToRight(`${JSON.stringify(sortArray(value, sortKey || undefined, sortDir), null, 2)}\n`)
-            notify('Array ordenado (direita).')
+            notify(t('tb.sortArrayOk'))
           })
           return
         case 'patch-diff': {
@@ -278,7 +285,7 @@ export function CenterRail({
             return
           }
           if (parsedRight.ok === false) {
-            notify(`Direita: ${parsedRight.error}`)
+            notify(t('rail.rightErr', { error: parsedRight.error }))
             return
           }
           onSendToRight(stringifyPatch(diffToJsonPatch(parsedLeft.value, parsedRight.value)))
@@ -301,22 +308,22 @@ export function CenterRail({
             return
           }
           if (parsedRight.ok === false) {
-            notify(`Direita: ${parsedRight.error}`)
+            notify(t('rail.rightErr', { error: parsedRight.error }))
             return
           }
           onSendToRight(`${JSON.stringify(mergeJson(parsedLeft.value, parsedRight.value, mergeMode), null, 2)}\n`)
-          notify('Merge enviado à direita.')
+          notify(t('rail.mergeOk'))
         }
       }
     } catch (err) {
-      notify(err instanceof Error ? err.message : 'Falha na operação')
+      notify(err instanceof Error ? err.message : t('rail.opFail'))
     }
   }
 
   const handleSchema = () => {
     withParsedLeft((value) => {
       onSendToRight(stringifySchema(value))
-      notify('JSON Schema enviado à direita.')
+      notify(t('rail.schemaOk'))
     })
   }
 
@@ -325,7 +332,7 @@ export function CenterRail({
       const code = generateCode(value, language)
       setCodeOut(code)
       onSendToRight(code)
-      notify('Código gerado e enviado à direita.')
+      notify(t('rail.codeOk'))
     })
   }
 
@@ -334,9 +341,9 @@ export function CenterRail({
       const findings = scanSensitive(value)
       const text = findings.length
         ? `${JSON.stringify(findings, null, 2)}\n`
-        : 'Nenhum dado sensível detectado.\n'
+        : t('rail.secNone')
       setPopup({
-        title: findings.length ? `Segurança — ${findings.length} alerta(s)` : 'Segurança — nada suspeito',
+        title: findings.length ? t('rail.secTitle', { count: findings.length }) : t('rail.secClean'),
         text,
       })
     })
@@ -345,7 +352,7 @@ export function CenterRail({
   const handleMask = () => {
     withParsedLeft((value) => {
       setPopup({
-        title: 'Segurança — mascarado',
+        title: t('rail.secMasked'),
         text: `${JSON.stringify(maskSensitive(value), null, 2)}\n`,
       })
     })
@@ -354,7 +361,7 @@ export function CenterRail({
   const handleMock = () => {
     withParsedLeft((value) => {
       setPopup({
-        title: `Mock — ${mockCount} registro(s)`,
+        title: t('rail.mockTitle'),
         text: `${JSON.stringify(generateMock(value, mockCount), null, 2)}\n`,
         allowSend: true,
       })
@@ -365,13 +372,13 @@ export function CenterRail({
     withParsedLeft((value) => {
       try {
         setPopup({
-          title: `SQL — ${sqlDialect}`,
+          title: t('rail.sqlTitle'),
           text: jsonToSql(value, { dialect: sqlDialect, table: 'items' }),
           allowSend: true,
           downloadFilename: 'items.sql',
         })
       } catch (err) {
-        notify(err instanceof Error ? err.message : 'Falha ao gerar SQL')
+        notify(err instanceof Error ? err.message : t('rail.opFail'))
       }
     })
   }
@@ -389,7 +396,7 @@ export function CenterRail({
     }
     setApiOpen(false)
     setPopup({
-      title: `API — resposta ${result.status}`,
+      title: t('rail.httpTitle'),
       text: formatHttpResponse(result),
       allowSend: true,
     })
@@ -398,7 +405,7 @@ export function CenterRail({
   const handleCurl = () => {
     setApiOpen(false)
     setPopup({
-      title: 'API — cURL',
+      title: t('rail.curlTitle'),
       text: generateCurl({
         method: httpMethod,
         url: httpUrl,
@@ -411,33 +418,33 @@ export function CenterRail({
 
   const handleCopy = async (text: string) => {
     const ok = await copyText(text)
-    notify(ok ? '✓ Copiado' : 'Falha ao copiar')
+    notify(ok ? t('rail.copied') : t('rail.copyFail'))
   }
 
   const handleSend = (text: string) => {
     onSendToRight(text)
-    notify('Enviado ao painel direito.')
+    notify(t('rail.sentRight'))
     setPopup(null)
   }
 
   const handleDownload = (text: string, filename: string) => {
     downloadText(filename, text)
-    notify(`Arquivo ${filename} baixado.`)
+    notify(t('rail.downloaded', { filename }))
   }
 
   return (
-    <div className={styles.rail} role="toolbar" aria-label="Operações entre painéis">
+    <div className={styles.rail} role="toolbar" aria-label={t('rail.aria')}>
       {/* Copiar sempre primeiro; demais em ordem alfabética */}
       <section className={styles.group} aria-labelledby="rail-copy">
         <h2 id="rail-copy" className={styles.label}>
-          Copiar
+          {t('rail.copy')}
         </h2>
         <div className={styles.row}>
           <button
             type="button"
             className={styles.iconButton}
-            title="Copiar direita para a esquerda"
-            aria-label="Copiar direita para a esquerda"
+            title={t('rail.copyRL')}
+            aria-label={t('rail.copyRL')}
             onClick={onCopyLeft}
           >
             <ChevronLeftIcon />
@@ -445,8 +452,8 @@ export function CenterRail({
           <button
             type="button"
             className={styles.iconButton}
-            title="Copiar esquerda para a direita"
-            aria-label="Copiar esquerda para a direita"
+            title={t('rail.copyLR')}
+            aria-label={t('rail.copyLR')}
             onClick={onCopyRight}
           >
             <ChevronRightIcon />
@@ -456,36 +463,36 @@ export function CenterRail({
 
       <section className={styles.group} aria-labelledby="rail-api">
         <h2 id="rail-api" className={styles.label}>
-          API
+          {t('rail.api')}
         </h2>
         <button type="button" className={styles.actionButton} onClick={() => setApiOpen(true)}>
-          Abrir
+          {t('common.open')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-query">
         <h2 id="rail-query" className={styles.label}>
-          Consultar
+          {t('rail.query')}
         </h2>
         <button type="button" className={styles.actionButton} onClick={() => setQueryOpen(true)}>
-          Abrir
+          {t('common.open')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-convert">
         <h2 id="rail-convert" className={styles.label}>
-          Converter
+          {t('rail.convert')}
         </h2>
         <div className={styles.convertPair}>
           <label className={styles.srOnly} htmlFor="rail-convert-from">
-            De
+            {t('common.from')}
           </label>
           <select
             id="rail-convert-from"
             className={styles.select}
             value={convertFrom}
             onChange={(e) => onConvertFromChange(e.target.value as ConvertFormat)}
-            title="De"
+            title={t('common.from')}
           >
             {(Object.keys(CONVERT_LABEL) as ConvertFormat[])
               .filter((format) => CONVERT_TARGETS[format].length > 0)
@@ -499,14 +506,14 @@ export function CenterRail({
             →
           </span>
           <label className={styles.srOnly} htmlFor="rail-convert-to">
-            Para
+            {t('common.to')}
           </label>
           <select
             id="rail-convert-to"
             className={styles.select}
             value={convertTo}
             onChange={(e) => setConvertTo(e.target.value as ConvertFormat)}
-            title="Para"
+            title={t('common.to')}
           >
             {convertTargets.map((format) => (
               <option key={format} value={format}>
@@ -516,35 +523,35 @@ export function CenterRail({
           </select>
         </div>
         <button type="button" className={styles.actionButton} onClick={handleConvert}>
-          Converter
+          {t('rail.convert')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-diff">
         <h2 id="rail-diff" className={styles.label}>
-          Diferenças
+          {t('rail.diff')}
         </h2>
         <button
           type="button"
           className={`${styles.actionButton} ${compareActive ? styles.compareActive : ''}`}
           aria-pressed={compareActive}
-          title="Comparar estrutura dos dois documentos"
+          title={t('rail.compareTitle')}
           onClick={onCompare}
         >
           <CompareIcon />
-          Comparar
+          {t('rail.compare')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-codegen">
         <h2 id="rail-codegen" className={styles.label}>
-          Gerar
+          {t('rail.codegen')}
         </h2>
         <select
           className={styles.select}
           value={language}
           onChange={(e) => setLanguage(e.target.value as CodeLanguage)}
-          aria-label="Linguagem"
+          aria-label={t('rail.language')}
         >
           <option value="typescript">TypeScript</option>
           <option value="csharp">C#</option>
@@ -554,7 +561,7 @@ export function CenterRail({
           <option value="kotlin">Kotlin</option>
         </select>
         <button type="button" className={styles.actionButton} onClick={handleCodegen}>
-          Gerar
+          {t('common.generate')}
         </button>
         <button
           type="button"
@@ -562,22 +569,22 @@ export function CenterRail({
           disabled={!codeOut}
           onClick={() => handleDownload(codeOut, codeLanguageFilename(language))}
         >
-          Baixar
+          {t('common.download')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-schema">
         <h2 id="rail-schema" className={styles.label}>
-          Gerar schema
+          {t('rail.schema')}
         </h2>
         <button type="button" className={styles.actionButton} onClick={handleSchema}>
-          Gerar
+          {t('common.generate')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-mock">
         <h2 id="rail-mock" className={styles.label}>
-          Mock
+          {t('rail.mock')}
         </h2>
         <input
           className={styles.select}
@@ -586,30 +593,30 @@ export function CenterRail({
           max={1000}
           value={mockCount}
           onChange={(e) => setMockCount(Number(e.target.value) || 1)}
-          aria-label="Quantidade de registros"
-          title="Registros"
+          aria-label={t('rail.mockCount')}
+          title={t('rail.mockCount')}
         />
         <button type="button" className={styles.actionButton} onClick={handleMock}>
-          Gerar
+          {t('common.generate')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-patch">
         <h2 id="rail-patch" className={styles.label}>
-          Patch / Flatten
+          {t('rail.patch')}
         </h2>
         <select
           className={styles.select}
           value={patchMode}
           onChange={(e) => setPatchMode(e.target.value as PatchMode)}
-          aria-label="Operação"
+          aria-label={t('rail.op')}
         >
           <option value="flatten">Flatten</option>
           <option value="unflatten">Unflatten</option>
-          <option value="sort-keys">Ordenar chaves</option>
-          <option value="sort-array">Ordenar array</option>
-          <option value="patch-diff">Patch L→R</option>
-          <option value="patch-apply">Aplicar patch</option>
+          <option value="sort-keys">{t('rail.sortKeys')}</option>
+          <option value="sort-array">{t('rail.sortArray')}</option>
+          <option value="patch-diff">{t('rail.patchLR')}</option>
+          <option value="patch-apply">{t('rail.applyPatch')}</option>
           <option value="merge">Merge</option>
         </select>
         {patchMode === 'sort-keys' || patchMode === 'sort-array' ? (
@@ -617,7 +624,7 @@ export function CenterRail({
             className={styles.select}
             value={sortDir}
             onChange={(e) => setSortDir(e.target.value as SortDir)}
-            aria-label="Direção"
+            aria-label={t('rail.dir')}
           >
             <option value="asc">Asc</option>
             <option value="desc">Desc</option>
@@ -628,8 +635,8 @@ export function CenterRail({
             className={styles.select}
             value={sortKey}
             onChange={(e) => setSortKey(e.target.value)}
-            placeholder="chave"
-            aria-label="Chave de ordenação"
+            placeholder={t('rail.sortKeyPh')}
+            aria-label={t('rail.sortKey')}
           />
         ) : null}
         {patchMode === 'merge' ? (
@@ -637,7 +644,7 @@ export function CenterRail({
             className={styles.select}
             value={mergeMode}
             onChange={(e) => setMergeMode(e.target.value as MergeMode)}
-            aria-label="Modo merge"
+            aria-label={t('rail.mergeMode')}
           >
             <option value="deep">Deep</option>
             <option value="shallow">Shallow</option>
@@ -645,31 +652,31 @@ export function CenterRail({
           </select>
         ) : null}
         <button type="button" className={styles.actionButton} onClick={handlePatch}>
-          Executar
+          {t('common.execute')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-security">
         <h2 id="rail-security" className={styles.label}>
-          Segurança
+          {t('rail.security')}
         </h2>
         <button type="button" className={styles.actionButton} onClick={handleSecurity}>
-          Verificar
+          {t('rail.scan')}
         </button>
         <button type="button" className={styles.actionButtonGhost} onClick={handleMask}>
-          Mascarar
+          {t('rail.mask')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-sql">
         <h2 id="rail-sql" className={styles.label}>
-          SQL
+          {t('rail.sql')}
         </h2>
         <select
           className={styles.select}
           value={sqlDialect}
           onChange={(e) => setSqlDialect(e.target.value as SqlDialect)}
-          aria-label="Dialeto SQL"
+          aria-label={t('rail.sqlDialect')}
         >
           <option value="sqlite">SQLite</option>
           <option value="postgres">Postgres</option>
@@ -677,20 +684,20 @@ export function CenterRail({
           <option value="sqlserver">SQL Server</option>
         </select>
         <button type="button" className={styles.actionButton} onClick={handleSql}>
-          Gerar
+          {t('common.generate')}
         </button>
       </section>
 
       <section className={styles.group} aria-labelledby="rail-transform">
         <h2 id="rail-transform" className={styles.label}>
-          Transformar
+          {t('rail.transform')}
         </h2>
         <div className={styles.row}>
           <button
             type="button"
             className={styles.iconButton}
-            title="Transformar a direita e gravar à esquerda"
-            aria-label="Transformar a direita e gravar à esquerda"
+            title={t('rail.transformRL')}
+            aria-label={t('rail.transformRL')}
             onClick={onTransformLeft}
           >
             <ChevronLeftIcon />
@@ -698,8 +705,8 @@ export function CenterRail({
           <button
             type="button"
             className={styles.iconButton}
-            title="Transformar a esquerda e gravar à direita"
-            aria-label="Transformar a esquerda e gravar à direita"
+            title={t('rail.transformLR')}
+            aria-label={t('rail.transformLR')}
             onClick={onTransformRight}
           >
             <ChevronRightIcon />
@@ -725,12 +732,12 @@ export function CenterRail({
             className={styles.apiDialog}
             role="dialog"
             aria-modal="true"
-            aria-label="Consultar JSON"
+            aria-label={t('rail.queryDialog')}
             onClick={(event) => event.stopPropagation()}
           >
             <header className={styles.apiHeader}>
-              <h2 className={styles.apiTitle}>Consultar</h2>
-              <button type="button" className={styles.apiClose} onClick={() => setQueryOpen(false)} aria-label="Fechar">
+              <h2 className={styles.apiTitle}>{t('rail.query')}</h2>
+              <button type="button" className={styles.apiClose} onClick={() => setQueryOpen(false)} aria-label={t('common.close')}>
                 ×
               </button>
             </header>
@@ -740,7 +747,7 @@ export function CenterRail({
                   className={styles.apiSelect}
                   value={queryEngine}
                   onChange={(e) => setQueryEngine(e.target.value as 'jsonpath' | 'jmespath')}
-                  aria-label="Motor"
+                  aria-label={t('rail.engine')}
                 >
                   <option value="jsonpath">JSONPath</option>
                   <option value="jmespath">JMESPath</option>
@@ -755,14 +762,14 @@ export function CenterRail({
                       handleQuery()
                     }
                   }}
-                  aria-label="Expressão"
+                  aria-label={t('rail.expr')}
                   placeholder={queryEngine === 'jsonpath' ? '$.users[*].email' : 'users[*].email'}
                 />
               </div>
             </div>
             <footer className={styles.apiFooter}>
               <button type="button" className={styles.actionButton} onClick={handleQuery}>
-                Executar
+                {t('common.execute')}
               </button>
             </footer>
           </div>
@@ -775,12 +782,12 @@ export function CenterRail({
             className={styles.apiDialog}
             role="dialog"
             aria-modal="true"
-            aria-label="Cliente API"
+            aria-label={t('rail.apiDialog')}
             onClick={(event) => event.stopPropagation()}
           >
             <header className={styles.apiHeader}>
-              <h2 className={styles.apiTitle}>API</h2>
-              <button type="button" className={styles.apiClose} onClick={() => setApiOpen(false)} aria-label="Fechar">
+              <h2 className={styles.apiTitle}>{t('rail.api')}</h2>
+              <button type="button" className={styles.apiClose} onClick={() => setApiOpen(false)} aria-label={t('common.close')}>
                 ×
               </button>
             </header>
@@ -790,7 +797,7 @@ export function CenterRail({
                   className={styles.apiSelect}
                   value={httpMethod}
                   onChange={(e) => setHttpMethod(e.target.value as HttpMethod)}
-                  aria-label="Método HTTP"
+                  aria-label={t('rail.httpMethod')}
                 >
                   <option value="GET">GET</option>
                   <option value="POST">POST</option>
@@ -804,11 +811,11 @@ export function CenterRail({
                   value={httpUrl}
                   onChange={(e) => setHttpUrl(e.target.value)}
                   aria-label="URL"
-                  placeholder="https://api.exemplo.com/recurso"
+                  placeholder={t('rail.urlPh')}
                 />
               </div>
               <label className={styles.apiLabel} htmlFor="rail-api-headers">
-                Headers
+                {t('rail.headers')}
               </label>
               <textarea
                 id="rail-api-headers"
@@ -818,7 +825,7 @@ export function CenterRail({
               />
               <div className={styles.apiRow}>
                 <label className={styles.apiLabel} htmlFor="rail-api-body">
-                  Body
+                  {t('rail.body')}
                 </label>
                 <button type="button" className={styles.actionButtonGhost} onClick={() => setHttpBody(leftText)}>
                   Usar esquerda
@@ -833,10 +840,10 @@ export function CenterRail({
             </div>
             <footer className={styles.apiFooter}>
               <button type="button" className={styles.actionButton} onClick={() => void handleApiSend()}>
-                Enviar
+                {t('rail.send')}
               </button>
               <button type="button" className={styles.actionButtonGhost} onClick={handleCurl}>
-                Gerar cURL
+                {t('rail.curl')}
               </button>
             </footer>
           </div>

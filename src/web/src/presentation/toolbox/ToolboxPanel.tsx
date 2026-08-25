@@ -589,6 +589,8 @@ export function ToolboxPanel({
   const visibleTabs = lockedTab
     ? tabs.filter(([id]) => id === lockedTab)
     : tabs.filter(([id]) => !railHostedTabs.has(id))
+  const analyzeTab = visibleTabs.find(([id]) => id === 'analyze')
+  const accordionTabs = visibleTabs.filter(([id]) => id !== 'analyze')
 
   const toggleTab = (id: ToolboxTab) => {
     if (lockedTab) return
@@ -1074,27 +1076,36 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
         </p>
       ) : null}
 
-      <div className={styles.accordion}>
-        {visibleTabs.map(([id, label]) => (
-          <div key={id} className={styles.accordionItem}>
-            <button
-              type="button"
-              className={`${styles.accordionTrigger} ${isExpanded(id) ? styles.accordionTriggerOpen : ''}`}
-              aria-expanded={isExpanded(id)}
-              disabled={Boolean(lockedTab)}
-              onClick={() => toggleTab(id)}
-            >
-              <span>{label}</span>
-              {!lockedTab ? (
-                <span className={styles.accordionIcon} aria-hidden="true">
-                  {isExpanded(id) ? '−' : '+'}
-                </span>
-              ) : null}
-            </button>
-            {isExpanded(id) ? <div className={styles.accordionPanel}>{renderTabContent(id)}</div> : null}
-          </div>
-        ))}
-      </div>
+      {analyzeTab ? (
+        <div className={styles.fixedSection}>
+          <h2 className={styles.fixedTitle}>{analyzeTab[1]}</h2>
+          <div className={styles.fixedBody}>{renderTabContent('analyze')}</div>
+        </div>
+      ) : null}
+
+      {accordionTabs.length > 0 ? (
+        <div className={styles.accordion}>
+          {accordionTabs.map(([id, label]) => (
+            <div key={id} className={styles.accordionItem}>
+              <button
+                type="button"
+                className={`${styles.accordionTrigger} ${isExpanded(id) ? styles.accordionTriggerOpen : ''}`}
+                aria-expanded={isExpanded(id)}
+                disabled={Boolean(lockedTab)}
+                onClick={() => toggleTab(id)}
+              >
+                <span>{label}</span>
+                {!lockedTab ? (
+                  <span className={styles.accordionIcon} aria-hidden="true">
+                    {isExpanded(id) ? '−' : '+'}
+                  </span>
+                ) : null}
+              </button>
+              {isExpanded(id) ? <div className={styles.accordionPanel}>{renderTabContent(id)}</div> : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       <ResultModal
         open={Boolean(popup)}

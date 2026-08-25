@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent, type PointerEvent } from 'react'
+import { useLocale } from '../../composition/LocaleProvider'
 import { compactJson, formatJson, parseFailMessage, tryParseJson } from '../../shared/json/format'
 import { structuralDiff, type StructuralDiff } from '../../shared/json/diff'
 import { SAMPLE_LEFT, SAMPLE_RIGHT } from '../../shared/json/sample'
@@ -29,6 +30,7 @@ function readFileText(file: File, onLoad: (text: string) => void) {
 }
 
 export function EditorWorkspace() {
+  const { t } = useLocale()
   const [left, setLeft] = useState(SAMPLE_LEFT)
   const [right, setRight] = useState(SAMPLE_RIGHT)
   const [leftRatio, setLeftRatio] = useState(0.5)
@@ -61,13 +63,21 @@ export function EditorWorkspace() {
     writeWorkspaceToLocalStorage(window.localStorage, left, right)
   }, [hydrated, left, right])
 
-  const loadFileToSide = useCallback((side: 'left' | 'right', file: File) => {
-    readFileText(file, (text) => {
-      if (side === 'left') setLeft(text)
-      else setRight(text)
-      setMessage(`Arquivo ${file.name} carregado à ${side === 'left' ? 'esquerda' : 'direita'}.`)
-    })
-  }, [])
+  const loadFileToSide = useCallback(
+    (side: 'left' | 'right', file: File) => {
+      readFileText(file, (text) => {
+        if (side === 'left') setLeft(text)
+        else setRight(text)
+        setMessage(
+          t('editor.loaded', {
+            name: file.name,
+            side: t(side === 'left' ? 'editor.side.left' : 'editor.side.right'),
+          }),
+        )
+      })
+    },
+    [t],
+  )
 
   const onOpen = useCallback(
     (side: 'left' | 'right', event: ChangeEvent<HTMLInputElement>) => {
@@ -116,16 +126,16 @@ export function EditorWorkspace() {
 
     const l = tryParseJson(left)
     const r = tryParseJson(right)
-    const leftError = parseFailMessage(l, 'esquerda')
-    const rightError = parseFailMessage(r, 'direita')
+    const leftError = parseFailMessage(l, t('editor.side.left'))
+    const rightError = parseFailMessage(r, t('editor.side.right'))
     if (leftError !== null) {
       setCompare(null)
-      setCompareError(`Não foi possível comparar: ${leftError}`)
+      setCompareError(t('editor.compareFail', { error: leftError }))
       return
     }
     if (rightError !== null) {
       setCompare(null)
-      setCompareError(`Não foi possível comparar: ${rightError}`)
+      setCompareError(t('editor.compareFail', { error: rightError }))
       return
     }
     if (l.ok === false || r.ok === false) {
@@ -133,7 +143,7 @@ export function EditorWorkspace() {
     }
     setCompareError(null)
     setCompare(structuralDiff(l.value, r.value))
-  }, [compareOn, left, right])
+  }, [compareOn, left, right, t])
 
   useEffect(() => {
     if (!compareOn || !belowFoldRef.current) {
@@ -154,7 +164,7 @@ export function EditorWorkspace() {
       if (event.key.toLowerCase() === 't') {
         event.preventDefault()
         belowFoldRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        setMessage('Ferramentas abaixo (Ctrl+Shift+T).')
+        setMessage(t('editor.toolsBelow'))
         return
       }
 
@@ -162,9 +172,9 @@ export function EditorWorkspace() {
         event.preventDefault()
         try {
           setLeft(formatJson(left))
-          setMessage('Esquerda formatada (Ctrl+Shift+F).')
+          setMessage(t('editor.formatted'))
         } catch (err) {
-          setMessage(err instanceof Error ? err.message : 'JSON inválido à esquerda')
+          setMessage(err instanceof Error ? err.message : t('editor.invalidLeft'))
         }
         return
       }
@@ -173,15 +183,15 @@ export function EditorWorkspace() {
         event.preventDefault()
         try {
           setLeft(compactJson(left))
-          setMessage('Esquerda compactada (Ctrl+Shift+M).')
+          setMessage(t('editor.compacted'))
         } catch (err) {
-          setMessage(err instanceof Error ? err.message : 'JSON inválido à esquerda')
+          setMessage(err instanceof Error ? err.message : t('editor.invalidLeft'))
         }
       }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [left])
+  }, [left, t])
 
   const onSplitterPointerDown = useCallback((event: PointerEvent<HTMLButtonElement>) => {
     dragRef.current = true
@@ -212,28 +222,36 @@ export function EditorWorkspace() {
     if (compareOn) {
       return null
     }
-    return 'Role a página para estatísticas. Atalhos: Ctrl+Shift+F/M/T.'
-  }, [compareOn, message])
+    return t('editor.hint')
+  }, [compareOn, message, t])
 
   return (
     <div className={styles.page}>
       <div className={styles.editorViewport}>
-        <div className={styles.toolbar} role="toolbar" aria-label="Arquivos">
+        <div className={styles.toolbar} role="toolbar" aria-label={t('editor.files')}>
         <div className={styles.group}>
           <button type="button" className={styles.button} onClick={() => fileLeftRef.current?.click()}>
-            Carregar arquivo à esquerda
+            {t('editor.loadLeft')}
           </button>
-          <button type="button" className={styles.button} onClick={() => downloadJson('esquerda.json', left)}>
-            Salvar arquivo da esquerda
+          <button
+            type="button"
+            className={styles.button}
+            onClick={() => downloadJson(t('editor.fileLeft'), left)}
+          >
+            {t('editor.saveLeft')}
           </button>
         </div>
         <div className={styles.sep} />
         <div className={styles.group}>
           <button type="button" className={styles.button} onClick={() => fileRightRef.current?.click()}>
-            Carregar arquivo à direita
+            {t('editor.loadRight')}
           </button>
-          <button type="button" className={styles.button} onClick={() => downloadJson('direita.json', right)}>
-            Salvar arquivo à direita
+          <button
+            type="button"
+            className={styles.button}
+            onClick={() => downloadJson(t('editor.fileRight'), right)}
+          >
+            {t('editor.saveRight')}
           </button>
         </div>
         <input
@@ -265,13 +283,13 @@ export function EditorWorkspace() {
           onDrop={(event) => onPaneDrop('left', event)}
         >
           {hydrated ? (
-            <JsonEditorPane ref={leftEditorRef} content={left} onChange={setLeft} label="JSON esquerda" />
+            <JsonEditorPane ref={leftEditorRef} content={left} onChange={setLeft} label={t('editor.labelLeft')} />
           ) : null}
         </div>
         <button
           type="button"
           className={styles.split}
-          aria-label="Redimensionar painel esquerdo"
+          aria-label={t('editor.resizeLeft')}
           onPointerDown={onSplitterPointerDown}
           onPointerMove={onSplitterPointerMove}
           onPointerUp={stopDrag}
@@ -295,7 +313,7 @@ export function EditorWorkspace() {
         <button
           type="button"
           className={styles.split}
-          aria-label="Redimensionar painel direito"
+          aria-label={t('editor.resizeRight')}
           onPointerDown={onSplitterPointerDown}
           onPointerMove={onSplitterPointerMove}
           onPointerUp={stopDrag}
@@ -308,7 +326,7 @@ export function EditorWorkspace() {
           onDrop={(event) => onPaneDrop('right', event)}
         >
           {hydrated ? (
-            <JsonEditorPane ref={rightEditorRef} content={right} onChange={setRight} label="JSON direita" />
+            <JsonEditorPane ref={rightEditorRef} content={right} onChange={setRight} label={t('editor.labelRight')} />
           ) : null}
         </div>
       </div>

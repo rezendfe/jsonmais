@@ -1,26 +1,32 @@
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useLocale } from '../../composition/LocaleProvider'
 import { SAMPLE_LEFT } from '../../shared/json/sample'
 import { ToolboxPanel } from '../toolbox/ToolboxPanel'
-import { TOOL_CATALOG, type ToolCategory, type ToolDef } from './toolCatalog'
+import {
+  TOOL_CATALOG,
+  categoryKey,
+  toolBlurbKey,
+  toolDescriptionKey,
+  toolTitleKey,
+  type ToolCategoryId,
+  type ToolDef,
+} from './toolCatalog'
 import styles from './ToolPages.module.css'
 
 export { TOOL_CATALOG } from './toolCatalog'
 
-const TOOL_COUNT = `${TOOL_CATALOG.length}+`
-const CHIPS = [`${TOOL_COUNT} ferramentas`, '100% no browser', 'Sem cadastro', 'Local-first']
-
-const CATEGORY_ORDER: ToolCategory[] = [
-  'Analisar',
-  'Consultar',
-  'Schema',
-  'Transformar',
-  'Segurança',
-  'Mock',
-  'SQL',
-  'Converter',
-  'Gerar código',
-  'API',
+const CATEGORY_ORDER: ToolCategoryId[] = [
+  'analyze',
+  'query',
+  'schema',
+  'transform',
+  'security',
+  'mock',
+  'sql',
+  'convert',
+  'codegen',
+  'api',
 ]
 
 function toolInitials(title: string): string {
@@ -34,8 +40,8 @@ function toolInitials(title: string): string {
   )
 }
 
-function groupByCategory(tools: ToolDef[]): { category: ToolCategory; tools: ToolDef[] }[] {
-  const map = new Map<ToolCategory, ToolDef[]>()
+function groupByCategory(tools: ToolDef[]): { category: ToolCategoryId; tools: ToolDef[] }[] {
+  const map = new Map<ToolCategoryId, ToolDef[]>()
   for (const tool of tools) {
     const list = map.get(tool.category) ?? []
     list.push(tool)
@@ -73,43 +79,49 @@ function EditorMock() {
 }
 
 function ToolCard({ tool }: { tool: ToolDef }) {
+  const { t } = useLocale()
+  const title = t(toolTitleKey(tool.slug))
   return (
     <Link className={styles.card} to={`/ferramentas/${tool.slug}`}>
       <span className={styles.cardIcon} aria-hidden="true">
-        {toolInitials(tool.title)}
+        {toolInitials(title)}
       </span>
       <span className={styles.cardBody}>
-        <span className={styles.cardCategory}>{tool.category}</span>
-        <strong className={styles.cardTitle}>{tool.title}</strong>
-        <span className={styles.cardDesc}>{tool.description}</span>
+        <span className={styles.cardCategory}>{t(categoryKey(tool.category))}</span>
+        <strong className={styles.cardTitle}>{title}</strong>
+        <span className={styles.cardDesc}>{t(toolDescriptionKey(tool.slug))}</span>
       </span>
     </Link>
   )
 }
 
 export function ToolsIndexPage() {
+  const { t } = useLocale()
   const groups = useMemo(() => groupByCategory(TOOL_CATALOG), [])
+  const chips = [
+    t('hub.chip.tools', { count: TOOL_CATALOG.length }),
+    t('hub.chip.browser'),
+    t('hub.chip.noSignup'),
+    t('hub.chip.local'),
+  ]
 
   return (
     <div className={styles.hub}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <p className={styles.brandSignal}>JSON Mais</p>
-          <h1 className={styles.heroTitle}>Editor e ferramentas JSON no seu navegador</h1>
-          <p className={styles.heroLead}>
-            Formate, consulte, converta e gere código sem instalar nada e sem enviar o documento a
-            servidores.
-          </p>
+          <h1 className={styles.heroTitle}>{t('hub.heroTitle')}</h1>
+          <p className={styles.heroLead}>{t('hub.heroLead')}</p>
           <div className={styles.heroActions}>
             <Link className={styles.primaryCta} to="/">
-              Abrir editor
+              {t('common.openEditor')}
             </Link>
             <Link className={styles.secondaryCta} to="/como-funciona">
-              Como funciona
+              {t('common.howItWorks')}
             </Link>
           </div>
           <ul className={styles.chips}>
-            {CHIPS.map((chip) => (
+            {chips.map((chip) => (
               <li key={chip}>{chip}</li>
             ))}
           </ul>
@@ -119,12 +131,12 @@ export function ToolsIndexPage() {
 
       <section className={styles.catalog}>
         <div className={styles.sectionHead}>
-          <h2>Ferramentas essenciais em um só lugar</h2>
-          <p>Escolha uma ferramenta ou abra o workspace dual-panel completo.</p>
+          <h2>{t('hub.catalogTitle')}</h2>
+          <p>{t('hub.catalogLead')}</p>
         </div>
         {groups.map((group) => (
           <div key={group.category} className={styles.categoryBlock}>
-            <h3 className={styles.categoryTitle}>{group.category}</h3>
+            <h3 className={styles.categoryTitle}>{t(categoryKey(group.category))}</h3>
             <ul className={styles.cardGrid}>
               {group.tools.map((tool) => (
                 <li key={tool.slug}>
@@ -138,39 +150,39 @@ export function ToolsIndexPage() {
 
       <section className={styles.stepsPreview} aria-labelledby="hub-steps-title">
         <div className={styles.sectionHead}>
-          <h2 id="hub-steps-title">Como editar JSON online</h2>
-          <p>Três passos, do zero ao resultado.</p>
+          <h2 id="hub-steps-title">{t('hub.stepsTitle')}</h2>
+          <p>{t('hub.stepsLead')}</p>
         </div>
         <ol className={styles.stepsList}>
           <li>
             <span className={styles.stepNum}>1</span>
             <div>
-              <strong>Cole ou abra o JSON</strong>
-              <p>No editor dual-panel — tudo fica no seu navegador.</p>
+              <strong>{t('hub.step1.title')}</strong>
+              <p>{t('hub.step1.body')}</p>
             </div>
           </li>
           <li>
             <span className={styles.stepNum}>2</span>
             <div>
-              <strong>Edite, compare e transforme</strong>
-              <p>Texto, árvore, tabela e trilho do meio.</p>
+              <strong>{t('hub.step2.title')}</strong>
+              <p>{t('hub.step2.body')}</p>
             </div>
           </li>
           <li>
             <span className={styles.stepNum}>3</span>
             <div>
-              <strong>Use o toolbox</strong>
-              <p>Consultar, converter, schema, mock, SQL e codegen.</p>
+              <strong>{t('hub.step3.title')}</strong>
+              <p>{t('hub.step3.body')}</p>
             </div>
           </li>
         </ol>
       </section>
 
       <section className={styles.bottomCta}>
-        <h2>Experimente o editor agora</h2>
-        <p>Dois painéis, árvore, tabela, compare e toolbox — tudo no browser.</p>
+        <h2>{t('hub.bottomTitle')}</h2>
+        <p>{t('hub.bottomLead')}</p>
         <Link className={styles.primaryCta} to="/">
-          Abrir editor
+          {t('common.openEditor')}
         </Link>
       </section>
     </div>
@@ -179,15 +191,16 @@ export function ToolsIndexPage() {
 
 export function ToolPage() {
   const { slug } = useParams()
+  const { t } = useLocale()
   const tool = useMemo(() => TOOL_CATALOG.find((item) => item.slug === slug), [slug])
   const [source, setSource] = useState(SAMPLE_LEFT)
 
   if (!tool) {
     return (
       <article className={styles.page}>
-        <h1 className={styles.title}>Ferramenta não encontrada</h1>
+        <h1 className={styles.title}>{t('hub.notFound')}</h1>
         <p className={styles.lead}>
-          Volte ao <Link to="/ferramentas">catálogo</Link>.
+          {t('hub.notFoundLead')} <Link to="/ferramentas">{t('hub.notFoundCatalog')}</Link>.
         </p>
       </article>
     )
@@ -196,16 +209,18 @@ export function ToolPage() {
   return (
     <article className={styles.page}>
       <header className={styles.toolHero}>
-        <p className={styles.kicker}>{tool.category} · local-first</p>
-        <h1 className={styles.title}>{tool.title}</h1>
-        <p className={styles.lead}>{tool.description}</p>
-        <p className={styles.blurb}>{tool.blurb}</p>
+        <p className={styles.kicker}>
+          {t(categoryKey(tool.category))} · {t('hub.localFirst')}
+        </p>
+        <h1 className={styles.title}>{t(toolTitleKey(tool.slug))}</h1>
+        <p className={styles.lead}>{t(toolDescriptionKey(tool.slug))}</p>
+        <p className={styles.blurb}>{t(toolBlurbKey(tool.slug))}</p>
         <Link className={styles.secondaryCta} to="/">
-          Abrir no editor dual-panel
+          {t('hub.openDual')}
         </Link>
       </header>
       <label className={styles.sourceLabel} htmlFor="tool-source">
-        Entrada
+        {t('common.input')}
       </label>
       <textarea
         id="tool-source"

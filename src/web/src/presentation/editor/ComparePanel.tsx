@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from 'react'
+import { useLocale } from '../../composition/LocaleProvider'
 import {
   diffPathSegments,
   formatDiffPreview,
@@ -7,12 +8,6 @@ import {
   type StructuralDiff,
 } from '../../shared/json/diff'
 import styles from './ComparePanel.module.css'
-
-const KIND_LABEL: Record<DiffKind, string> = {
-  added: 'Adicionado',
-  removed: 'Removido',
-  changed: 'Alterado',
-}
 
 type Filter = 'all' | DiffKind
 
@@ -23,9 +18,10 @@ type ComparePanelProps = {
 }
 
 function PathBreadcrumbs({ path }: { path: string }) {
+  const { t } = useLocale()
   const segments = diffPathSegments(path)
   return (
-    <div className={styles.pathTrail} aria-label={`Caminho: ${path}`}>
+    <div className={styles.pathTrail} aria-label={t('compare.path', { path })}>
       {segments.map((segment, index) => (
         <Fragment key={`${path}-${index}`}>
           {index > 0 ? (
@@ -49,6 +45,7 @@ function ValueBlock({
   value: unknown
   variant: 'left' | 'right' | 'neutral'
 }) {
+  const { t } = useLocale()
   const full = formatDiffPreview(value, 2000)
   const short = formatDiffPreview(value, 96)
   const truncated = full.length > short.length
@@ -61,7 +58,7 @@ function ValueBlock({
       <code className={styles.valueCode}>{text}</code>
       {truncated ? (
         <button type="button" className={styles.expand} onClick={() => setExpanded((v) => !v)}>
-          {expanded ? 'Ver menos' : 'Ver valor completo'}
+          {expanded ? t('compare.collapse') : t('compare.expand')}
         </button>
       ) : null}
     </div>
@@ -69,22 +66,25 @@ function ValueBlock({
 }
 
 function DiffRow({ entry }: { entry: DiffEntry }) {
+  const { t } = useLocale()
   return (
     <li className={styles.row} data-kind={entry.kind}>
-      <span className={`${styles.badge} ${styles[`badge_${entry.kind}`]}`}>{KIND_LABEL[entry.kind]}</span>
+      <span className={`${styles.badge} ${styles[`badge_${entry.kind}`]}`}>
+        {t(`compare.kind.${entry.kind}`)}
+      </span>
       <div className={styles.rowBody}>
         <PathBreadcrumbs path={entry.path} />
         {entry.kind === 'changed' ? (
           <div className={styles.valueGrid}>
-            <ValueBlock label="Esquerda" value={entry.left} variant="left" />
-            <ValueBlock label="Direita" value={entry.right} variant="right" />
+            <ValueBlock label={t('common.left')} value={entry.left} variant="left" />
+            <ValueBlock label={t('common.right')} value={entry.right} variant="right" />
           </div>
         ) : null}
         {entry.kind === 'added' ? (
-          <ValueBlock label="Novo valor" value={entry.right} variant="right" />
+          <ValueBlock label={t('compare.newValue')} value={entry.right} variant="right" />
         ) : null}
         {entry.kind === 'removed' ? (
-          <ValueBlock label="Valor removido" value={entry.left} variant="left" />
+          <ValueBlock label={t('compare.removedValue')} value={entry.left} variant="left" />
         ) : null}
       </div>
     </li>
@@ -92,6 +92,7 @@ function DiffRow({ entry }: { entry: DiffEntry }) {
 }
 
 export function ComparePanel({ diff, error, onClose }: ComparePanelProps) {
+  const { t } = useLocale()
   const [filter, setFilter] = useState<Filter>('all')
 
   const total = diff ? diff.added + diff.removed + diff.changed : 0
@@ -114,16 +115,14 @@ export function ComparePanel({ diff, error, onClose }: ComparePanelProps) {
   }, [diff, filter, visible.length])
 
   return (
-    <section className={styles.panel} aria-label="Resultado da comparação">
+    <section className={styles.panel} aria-label={t('compare.aria')}>
       <header className={styles.header}>
         <div>
-          <h2 className={styles.title}>Comparar JSON</h2>
-          <p className={styles.subtitle}>
-            Esquerda → direita · ignora ordem de chaves em objetos
-          </p>
+          <h2 className={styles.title}>{t('compare.title')}</h2>
+          <p className={styles.subtitle}>{t('compare.subtitle')}</p>
         </div>
         <button type="button" className={styles.close} onClick={onClose}>
-          Fechar
+          {t('common.close')}
         </button>
       </header>
 
@@ -135,40 +134,40 @@ export function ComparePanel({ diff, error, onClose }: ComparePanelProps) {
 
       {!error && identical ? (
         <p className={styles.identical} role="status">
-          Os documentos são equivalentes — mesma estrutura e mesmos valores.
+          {t('compare.identical')}
         </p>
       ) : null}
 
       {!error && diff && total > 0 ? (
         <>
-          <ul className={styles.chips} aria-label="Resumo">
+          <ul className={styles.chips} aria-label={t('compare.summary')}>
             <li className={styles.chipTotal}>
               <strong>{total}</strong>
-              <span>diferenças</span>
+              <span>{t('compare.diff')}</span>
             </li>
             <li className={styles.chipAdded}>
               <strong>{diff.added}</strong>
-              <span>adicionados</span>
+              <span>{t('compare.added')}</span>
             </li>
             <li className={styles.chipRemoved}>
               <strong>{diff.removed}</strong>
-              <span>removidos</span>
+              <span>{t('compare.removed')}</span>
             </li>
             <li className={styles.chipChanged}>
               <strong>{diff.changed}</strong>
-              <span>alterados</span>
+              <span>{t('compare.changed')}</span>
             </li>
           </ul>
 
-          <div className={styles.filters} role="tablist" aria-label="Filtrar diferenças">
+          <div className={styles.filters} role="tablist" aria-label={t('compare.filter')}>
             {(
               [
-                ['all', 'Todos', total],
-                ['added', 'Adicionados', diff.added],
-                ['removed', 'Removidos', diff.removed],
-                ['changed', 'Alterados', diff.changed],
+                ['all', 'compare.all', total],
+                ['added', 'compare.filterAdded', diff.added],
+                ['removed', 'compare.filterRemoved', diff.removed],
+                ['changed', 'compare.filterChanged', diff.changed],
               ] as const
-            ).map(([id, label, count]) => (
+            ).map(([id, labelKey, count]) => (
               <button
                 key={id}
                 type="button"
@@ -177,13 +176,13 @@ export function ComparePanel({ diff, error, onClose }: ComparePanelProps) {
                 className={`${styles.filter} ${filter === id ? styles.filterActive : ''}`}
                 onClick={() => setFilter(id)}
               >
-                {label} ({count})
+                {t(labelKey)} ({count})
               </button>
             ))}
           </div>
 
           {visible.length === 0 ? (
-            <p className={styles.empty}>Nenhuma diferença neste filtro.</p>
+            <p className={styles.empty}>{t('compare.empty')}</p>
           ) : (
             <ul className={styles.list}>
               {visible.map((entry) => (
@@ -193,7 +192,7 @@ export function ComparePanel({ diff, error, onClose }: ComparePanelProps) {
           )}
 
           {hiddenCount > 0 ? (
-            <p className={styles.more}>… e mais {hiddenCount} diferenças</p>
+            <p className={styles.more}>{t('compare.more', { count: hiddenCount })}</p>
           ) : null}
         </>
       ) : null}

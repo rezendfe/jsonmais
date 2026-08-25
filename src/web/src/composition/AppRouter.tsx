@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ConsentProvider } from '../presentation/consent/ConsentProvider'
 import { AppShell } from '../presentation/layout/AppShell'
+import { LocaleProvider } from './LocaleProvider'
 
 const EditorPage = lazy(() =>
   import('../presentation/pages/EditorPage').then((m) => ({ default: m.EditorPage })),
@@ -31,22 +32,24 @@ function RouteFallback() {
 
 export function AppRouter() {
   return (
-    <BrowserRouter>
-      <ConsentProvider>
-        <Suspense fallback={<RouteFallback />}>
-          <Routes>
-            <Route element={<AppShell />}>
-              <Route index element={<EditorPage />} />
-              <Route path="ferramentas" element={<ToolsIndexPage />} />
-              <Route path="ferramentas/:slug" element={<ToolPage />} />
-              <Route path="sobre" element={<AboutPage />} />
-              <Route path="como-funciona" element={<HowItWorksPage />} />
-              <Route path="privacidade" element={<PrivacyPage />} />
-              <Route path="cookies" element={<CookiesPage />} />
-            </Route>
-          </Routes>
-        </Suspense>
-      </ConsentProvider>
-    </BrowserRouter>
+    <LocaleProvider>
+      <BrowserRouter>
+        <ConsentProvider>
+          <Suspense fallback={<RouteFallback />}>
+            <Routes>
+              <Route element={<AppShell />}>
+                <Route index element={<EditorPage />} />
+                <Route path="ferramentas" element={<ToolsIndexPage />} />
+                <Route path="ferramentas/:slug" element={<ToolPage />} />
+                <Route path="sobre" element={<AboutPage />} />
+                <Route path="como-funciona" element={<HowItWorksPage />} />
+                <Route path="privacidade" element={<PrivacyPage />} />
+                <Route path="cookies" element={<CookiesPage />} />
+              </Route>
+            </Routes>
+          </Suspense>
+        </ConsentProvider>
+      </BrowserRouter>
+    </LocaleProvider>
   )
 }

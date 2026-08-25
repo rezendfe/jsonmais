@@ -1,9 +1,11 @@
 import { useEffect, useId, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { useLocale } from '../../composition/LocaleProvider'
 import { useConsent } from './consentContext'
 import styles from './CookieBanner.module.css'
 
 export function CookieBanner() {
+  const { t } = useLocale()
   const {
     needsChoice,
     preferencesOpen,
@@ -50,59 +52,58 @@ export function CookieBanner() {
           aria-labelledby={titleId}
         >
           <h2 id={titleId} className={styles.title}>
-            Preferências de cookies
+            {t('consent.prefsTitle')}
           </h2>
-          <p className={styles.text}>
-            Essenciais mantêm o identificador anônimo local e a preferência de consentimento.
-            Marketing permite cookies e scripts de anúncios personalizados.
-          </p>
+          <p className={styles.text}>{t('consent.prefsBody')}</p>
           <ul className={styles.categories}>
             <li>
               <div>
-                <strong>Essenciais</strong>
-                <span>Sempre ativos · operação do site</span>
+                <strong>{t('consent.essential')}</strong>
+                <span>{t('consent.essentialDesc')}</span>
               </div>
-              <span className={styles.locked} aria-label="Sempre ativos">
+              <span className={styles.locked} aria-label={t('consent.essentialAria')}>
                 On
               </span>
             </li>
             <li>
               <div>
-                <strong>Marketing</strong>
-                <span>Anúncios e cookies de direcionamento</span>
+                <strong>{t('consent.marketing')}</strong>
+                <span>{t('consent.marketingDesc')}</span>
               </div>
               <label className={styles.switch}>
                 <input
                   ref={toggleRef}
                   type="checkbox"
                   checked={marketing}
-                  aria-label="Cookies de marketing"
+                  aria-label={t('consent.marketingAria')}
                   onChange={(e) => setMarketing(e.target.checked)}
                 />
-                <span className={styles.switchLabel}>{marketing ? 'Ativado' : 'Desativado'}</span>
+                <span className={styles.switchLabel}>
+                  {marketing ? t('consent.on') : t('consent.off')}
+                </span>
               </label>
             </li>
           </ul>
           <p className={styles.links}>
             <Link to="/privacidade" onClick={closePreferences}>
-              Privacidade
+              {t('shell.footer.privacy')}
             </Link>
             {' · '}
             <Link to="/cookies" onClick={closePreferences}>
-              Cookies
+              {t('cookies.title')}
             </Link>
           </p>
           <div className={styles.actions}>
             {!needsChoice && (
               <button type="button" className={styles.secondary} onClick={closePreferences}>
-                Fechar
+                {t('common.close')}
               </button>
             )}
             <button type="button" className={styles.secondary} onClick={rejectMarketing}>
-              Rejeitar marketing
+              {t('consent.rejectMarketing')}
             </button>
             <button type="button" className={styles.primary} onClick={acceptMarketing}>
-              Aceitar marketing
+              {t('consent.acceptMarketing')}
             </button>
           </div>
         </div>
@@ -114,16 +115,13 @@ export function CookieBanner() {
     <div className={styles.banner} role="dialog" aria-modal="true" aria-labelledby={titleId}>
       <div className={styles.bannerInner}>
         <h2 id={titleId} className={styles.title}>
-          Cookies e anúncios
+          {t('consent.title')}
         </h2>
-        <p className={styles.text}>
-          Usamos cookies essenciais para o funcionamento local do portal. Cookies de marketing e
-          anúncios só após o seu aceite. Você pode rejeitar e continuar editando JSON.
-        </p>
+        <p className={styles.text}>{t('consent.body')}</p>
         <p className={styles.links}>
-          <Link to="/privacidade">Privacidade</Link>
+          <Link to="/privacidade">{t('shell.footer.privacy')}</Link>
           {' · '}
-          <Link to="/cookies">Cookies</Link>
+          <Link to="/cookies">{t('cookies.title')}</Link>
         </p>
         <div className={styles.actions}>
           <button
@@ -132,13 +130,13 @@ export function CookieBanner() {
             className={styles.secondary}
             onClick={openPreferences}
           >
-            Gerenciar
+            {t('consent.manage')}
           </button>
           <button type="button" className={styles.secondary} onClick={rejectMarketing}>
-            Rejeitar
+            {t('consent.reject')}
           </button>
           <button type="button" className={styles.primary} onClick={acceptMarketing}>
-            Aceitar
+            {t('consent.accept')}
           </button>
         </div>
       </div>

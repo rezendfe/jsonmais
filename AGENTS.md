@@ -101,7 +101,7 @@ Lista canônica por feature: `specs/NNN-*/packages.md`.
 6. **Privacidade** — não logar conteúdo JSON; localStorage só no device do usuário.
 7. **Consentimento antes de ads** — cookies não essenciais só após CMP (`003`).
 8. **Azure-first** — deploy SWA estática; secrets só se integração futura exigir (fora do MVP front-only).
-9. **Locale MVP** — pt-BR.
+9. **Locale MVP** — português (`pt`) e inglês (`en`); detecção automática pelo idioma do browser, com seletor manual.
 10. **Pipeline entre ferramentas** — o resultado de uma operação pode alimentar o editor ou outra ferramenta sem sair do portal.
 
 ## Gates de Qualidade

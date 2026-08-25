@@ -7,6 +7,27 @@
   padding: 0.55rem 0.75rem 0.75rem;
 }
 
+.fixedSection {
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.12));
+  border-radius: var(--radius-sm, 0.4rem);
+  background: var(--input-bg, #fff);
+  overflow: hidden;
+}
+
+.fixedTitle {
+  margin: 0;
+  padding: 0.38rem 0.65rem;
+  font-size: 0.82rem;
+  font-weight: 650;
+  color: var(--brand);
+  background: var(--brand-soft, rgba(15, 118, 110, 0.08));
+  border-bottom: 1px solid var(--border, rgba(15, 23, 42, 0.08));
+}
+
+.fixedBody {
+  padding: 0.55rem 0.65rem 0.65rem;
+}
+
 .accordion {
   display: flex;
   flex-direction: column;
