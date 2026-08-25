@@ -3,7 +3,7 @@
 **Produto**: JSON Mais Portal  
 **Feature Branch**: `014-shell-footer-chrome`  
 **Created**: 2026-08-24  
-**Status**: In Progress  
+**Status**: Done  
 
 ## Resumo executivo
 

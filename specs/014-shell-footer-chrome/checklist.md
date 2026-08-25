@@ -5,4 +5,4 @@
 - [x] Links/copyright legíveis com ink/muted
 - [x] Colunas e rotas do footer inalteradas
 - [x] `npm run build` em `src/web` OK
-- [ ] Push → SWA deploy
+- [x] Push → SWA deploy
