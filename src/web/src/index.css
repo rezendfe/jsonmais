@@ -16,9 +16,9 @@ html[data-theme='light'] {
   --panel-bg: #ffffff;
   --code-bg: rgba(15, 23, 42, 0.04);
   --chip-bg: rgba(15, 118, 110, 0.08);
-  --footer-bg: #0b1220;
-  --footer-ink: #e2e8f0;
-  --footer-muted: #94a3b8;
+  --footer-bg: var(--header-bg);
+  --footer-ink: var(--ink);
+  --footer-muted: var(--muted);
   --danger: #b42318;
   --radius-sm: 0.4rem;
   --radius-md: 0.65rem;
@@ -57,9 +57,9 @@ html[data-theme='dark'] {
   --panel-bg: #0f172a;
   --code-bg: rgba(148, 163, 184, 0.08);
   --chip-bg: rgba(45, 212, 191, 0.12);
-  --footer-bg: #020617;
-  --footer-ink: #e2e8f0;
-  --footer-muted: #94a3b8;
+  --footer-bg: var(--header-bg);
+  --footer-ink: var(--ink);
+  --footer-muted: var(--muted);
   --danger: #f87171;
   --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.35);
   --shadow-cta: 0 8px 22px rgba(45, 212, 191, 0.2);

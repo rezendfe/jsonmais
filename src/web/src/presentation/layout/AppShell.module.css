@@ -127,7 +127,8 @@
   flex-shrink: 0;
   background: var(--footer-bg);
   color: var(--footer-ink);
-  border-top: 1px solid rgba(148, 163, 184, 0.18);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(12px);
 }
 
 .footerGrid {
@@ -188,7 +189,7 @@
   width: min(1180px, 100%);
   margin: 0 auto;
   padding: 0.85rem 1.25rem 1.35rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.14);
+  border-top: 1px solid var(--border);
   color: var(--footer-muted);
   font-size: 0.8rem;
 }
