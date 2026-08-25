@@ -8,3 +8,4 @@
 | T004 | Rotas SEO R2 + ADR-005 + checklist | RF-005-009 | Done |
 | T005 | Atualizar AGENTS/constitution/skill/routing | catalog | Done |
 | T006 | UX: clarificar Transformar; Converter De→Para; Gerar→direita+download; Segurança/Mock/SQL/API em pop-up | RF-005-001–008 / RF-004 | Done |
+| T007 | CenterRail: Converter/Transformar/Segurança/Mock/SQL/API entre painéis; remover hint Transformar | RF-001-013 / UX | Done |

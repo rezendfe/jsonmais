@@ -255,7 +255,7 @@ export function EditorWorkspace() {
       <div
         className={styles.panels}
         style={{
-          gridTemplateColumns: `minmax(0, ${leftRatio}fr) 6px 5.75rem 6px minmax(0, ${1 - leftRatio}fr)`,
+          gridTemplateColumns: `minmax(0, ${leftRatio}fr) 6px 8.25rem 6px minmax(0, ${1 - leftRatio}fr)`,
         }}
       >
         <div
@@ -278,6 +278,8 @@ export function EditorWorkspace() {
           onPointerCancel={stopDrag}
         />
         <CenterRail
+          leftText={left}
+          rightText={right}
           compareActive={compareOn}
           onCopyLeft={() => setLeft(right)}
           onCopyRight={() => setRight(left)}
@@ -287,6 +289,8 @@ export function EditorWorkspace() {
             setMessage(null)
             setCompareOn((value) => !value)
           }}
+          onSendToRight={setRight}
+          onNotify={setMessage}
         />
         <button
           type="button"
