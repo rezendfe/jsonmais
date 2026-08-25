@@ -1,0 +1,30 @@
+/** Tool route slugs — keep in sync with `presentation/pages/toolCatalog.ts`. */
+export const SEO_TOOL_SLUGS = [
+  'json-formatter',
+  'json-validator',
+  'jsonpath',
+  'jmespath',
+  'json-schema',
+  'json-patch',
+  'json-merge',
+  'flatten',
+  'security',
+  'mask',
+  'mock',
+  'json-to-sql',
+  'json-to-yaml',
+  'json-to-xml',
+  'json-to-csv',
+  'json-to-toml',
+  'json-to-markdown',
+  'json-to-csharp',
+  'json-to-typescript',
+  'json-to-java',
+  'json-to-python',
+  'json-to-go',
+  'json-to-kotlin',
+  'http-client',
+  'curl-generator',
+] as const
+
+export type SeoToolSlug = (typeof SEO_TOOL_SLUGS)[number]

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ConsentProvider } from '../presentation/consent/ConsentProvider'
 import { AppShell } from '../presentation/layout/AppShell'
+import { SeoHead } from '../presentation/seo/SeoHead'
 import { LocaleProvider } from './LocaleProvider'
 
 const EditorPage = lazy(() =>
@@ -34,6 +35,7 @@ export function AppRouter() {
   return (
     <LocaleProvider>
       <BrowserRouter>
+        <SeoHead />
         <ConsentProvider>
           <Suspense fallback={<RouteFallback />}>
             <Routes>

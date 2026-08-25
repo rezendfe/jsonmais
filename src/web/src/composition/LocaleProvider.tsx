@@ -49,10 +49,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   )
 
   useEffect(() => {
-    applyLocaleToDocument(locale, {
-      title: translate(locale, 'meta.title'),
-      description: translate(locale, 'meta.description'),
-    })
+    applyLocaleToDocument(locale)
   }, [locale])
 
   const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t])

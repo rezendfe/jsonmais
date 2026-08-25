@@ -34,26 +34,10 @@ export function htmlLang(locale: Locale): string {
   return locale === 'pt' ? 'pt-BR' : 'en'
 }
 
-export function applyLocaleToDocument(
-  locale: Locale,
-  meta: { title: string; description: string },
-): void {
+export function applyLocaleToDocument(locale: Locale): void {
   document.documentElement.lang = htmlLang(locale)
-  document.title = meta.title
-  const description = document.querySelector('meta[name="description"]')
-  if (description) {
-    description.setAttribute('content', meta.description)
-  }
   const ogLocale = document.querySelector('meta[property="og:locale"]')
   if (ogLocale) {
     ogLocale.setAttribute('content', locale === 'pt' ? 'pt_BR' : 'en_US')
-  }
-  const ogTitle = document.querySelector('meta[property="og:title"]')
-  if (ogTitle) {
-    ogTitle.setAttribute('content', meta.title)
-  }
-  const ogDesc = document.querySelector('meta[property="og:description"]')
-  if (ogDesc) {
-    ogDesc.setAttribute('content', meta.description)
   }
 }
