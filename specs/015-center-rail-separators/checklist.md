@@ -5,4 +5,4 @@
 - [x] Último grupo sem borda inferior sobrando (`.group + .group`)
 - [x] Ações do trilho inalteradas (só CSS)
 - [x] `npm run build` em `src/web` OK
-- [ ] Push → SWA deploy
+- [x] Push → SWA deploy
