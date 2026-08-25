@@ -1,0 +1,96 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(42rem, 100%);
+  max-height: min(85vh, 40rem);
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.16));
+  border-radius: var(--radius-sm, 0.5rem);
+  background: var(--panel-bg, #fff);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.22);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.close {
+  appearance: none;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.16));
+  border-radius: 0.35rem;
+  background: var(--input-bg, #fff);
+  color: var(--ink);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--chip-bg, rgba(15, 23, 42, 0.04));
+}
+
+.body {
+  flex: 1;
+  min-height: 12rem;
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.14));
+  border-radius: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  background: var(--code-bg, #0f172a0a);
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.button,
+.buttonPrimary {
+  border: 1px solid var(--border, rgba(15, 23, 42, 0.16));
+  background: var(--input-bg, #fff);
+  color: var(--ink);
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.buttonPrimary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand, #fff);
+}

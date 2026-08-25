@@ -166,6 +166,34 @@
   white-space: pre-wrap;
 }
 
+.convertPair {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.65rem;
+}
+
+.convertField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 8rem;
+  flex: 1;
+}
+
+.convertArrow {
+  align-self: center;
+  padding-bottom: 0.35rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.stackActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
 .hint,
 .ok,
 .error {

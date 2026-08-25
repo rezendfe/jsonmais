@@ -87,12 +87,13 @@ export function CenterRail({
         <h2 id="rail-transform" className={styles.label}>
           Transformar
         </h2>
+        <p className={styles.hint}>Abre consulta (JSONPath / JMESPath) na origem e grava o resultado no destino.</p>
         <div className={styles.row}>
           <button
             type="button"
             className={styles.iconButton}
-            title="Transformar a direita e gravar à esquerda"
-            aria-label="Transformar a direita e gravar à esquerda"
+            title="Consultar/filtrar a direita e gravar o resultado à esquerda"
+            aria-label="Consultar a direita e gravar o resultado à esquerda"
             onClick={onTransformLeft}
           >
             <ChevronLeftIcon />
@@ -100,8 +101,8 @@ export function CenterRail({
           <button
             type="button"
             className={styles.iconButton}
-            title="Transformar a esquerda e gravar à direita"
-            aria-label="Transformar a esquerda e gravar à direita"
+            title="Consultar/filtrar a esquerda e gravar o resultado à direita"
+            aria-label="Consultar a esquerda e gravar o resultado à direita"
             onClick={onTransformRight}
           >
             <ChevronRightIcon />

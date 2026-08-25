@@ -29,7 +29,80 @@ import {
   parseHeadersText,
   type HttpMethod,
 } from '../../shared/http/request'
+import { ResultModal } from './ResultModal'
 import styles from './ToolboxPanel.module.css'
+
+export type ConvertMode =
+  | 'json-yaml'
+  | 'yaml-json'
+  | 'json-xml'
+  | 'xml-json'
+  | 'json-csv'
+  | 'csv-json'
+  | 'json-toml'
+  | 'toml-json'
+  | 'json-markdown'
+
+type ConvertFormat = 'json' | 'yaml' | 'xml' | 'csv' | 'toml' | 'markdown'
+
+type ResultPopup = {
+  title: string
+  text: string
+  downloadFilename?: string
+  allowSend?: boolean
+}
+
+const CONVERT_LABEL: Record<ConvertFormat, string> = {
+  json: 'JSON',
+  yaml: 'YAML',
+  xml: 'XML',
+  csv: 'CSV',
+  toml: 'TOML',
+  markdown: 'Markdown',
+}
+
+const CONVERT_TARGETS: Record<ConvertFormat, ConvertFormat[]> = {
+  json: ['yaml', 'xml', 'csv', 'toml', 'markdown'],
+  yaml: ['json'],
+  xml: ['json'],
+  csv: ['json'],
+  toml: ['json'],
+  markdown: [],
+}
+
+const TRANSFORM_HINT: Record<
+  'flatten' | 'unflatten' | 'sort-keys' | 'sort-array' | 'patch-diff' | 'patch-apply' | 'merge',
+  string
+> = {
+  flatten: 'Achata objetos aninhados em chaves com ponto (ex.: user.name). Fonte = esquerda.',
+  unflatten: 'Reconstrói objetos aninhados a partir de chaves planas. Fonte = esquerda.',
+  'sort-keys': 'Ordena as chaves de objetos (recursivo). Fonte = esquerda.',
+  'sort-array': 'Ordena um array (opcionalmente por uma chave). Fonte = esquerda.',
+  'patch-diff': 'Gera JSON Patch RFC 6902: esquerda = base, direita = alvo.',
+  'patch-apply': 'Aplica um JSON Patch na esquerda (cole o patch abaixo ou use a direita).',
+  merge: 'Combina esquerda (base) + direita (alvo) no modo escolhido.',
+}
+
+function modeToFormats(mode: ConvertMode): { from: ConvertFormat; to: ConvertFormat } {
+  const [from, to] = mode.split('-') as [ConvertFormat, ConvertFormat]
+  return { from, to }
+}
+
+function formatsToMode(from: ConvertFormat, to: ConvertFormat): ConvertMode | null {
+  const key = `${from}-${to}` as ConvertMode
+  const allowed: ConvertMode[] = [
+    'json-yaml',
+    'yaml-json',
+    'json-xml',
+    'xml-json',
+    'json-csv',
+    'csv-json',
+    'json-toml',
+    'toml-json',
+    'json-markdown',
+  ]
+  return allowed.includes(key) ? key : null
+}
 
 export type ToolboxTab =
   | 'analyze'
@@ -42,17 +115,6 @@ export type ToolboxTab =
   | 'mock'
   | 'sql'
   | 'api'
-
-export type ConvertMode =
-  | 'json-yaml'
-  | 'yaml-json'
-  | 'json-xml'
-  | 'xml-json'
-  | 'json-csv'
-  | 'csv-json'
-  | 'json-toml'
-  | 'toml-json'
-  | 'json-markdown'
 
 export type ToolboxPanelProps = {
   sourceText: string
@@ -142,7 +204,9 @@ export function ToolboxPanel({
   const [queryEngine, setQueryEngine] = useState<'jsonpath' | 'jmespath'>(initialQueryEngine)
   const [queryExpr, setQueryExpr] = useState('$.')
   const [queryOut, setQueryOut] = useState('')
-  const [convertMode, setConvertMode] = useState<ConvertMode>(initialConvertMode)
+  const initialFormats = modeToFormats(initialConvertMode)
+  const [convertFrom, setConvertFrom] = useState<ConvertFormat>(initialFormats.from)
+  const [convertTo, setConvertTo] = useState<ConvertFormat>(initialFormats.to)
   const [convertOut, setConvertOut] = useState('')
   const [language, setLanguage] = useState<CodeLanguage>(initialLanguage)
   const [codeOut, setCodeOut] = useState('')
@@ -154,19 +218,18 @@ export function ToolboxPanel({
   const [patchInput, setPatchInput] = useState('')
   const [schemaOut, setSchemaOut] = useState('')
   const [findings, setFindings] = useState<SensitiveFinding[]>([])
-  const [securityOut, setSecurityOut] = useState('')
   const [mockCount, setMockCount] = useState(3)
-  const [mockOut, setMockOut] = useState('')
   const [sqlDialect, setSqlDialect] = useState<SqlDialect>(initialSqlDialect)
   const [sqlTable, setSqlTable] = useState('items')
-  const [sqlOut, setSqlOut] = useState('')
   const [httpMethod, setHttpMethod] = useState<HttpMethod>('GET')
   const [httpUrl, setHttpUrl] = useState('https://jsonplaceholder.typicode.com/todos/1')
   const [httpHeaders, setHttpHeaders] = useState('Accept: application/json')
   const [httpBody, setHttpBody] = useState('')
-  const [httpOut, setHttpOut] = useState('')
-  const [curlOut, setCurlOut] = useState('')
   const [feedback, setFeedback] = useState<Feedback>(null)
+  const [popup, setPopup] = useState<ResultPopup | null>(null)
+
+  const convertMode = formatsToMode(convertFrom, convertTo)
+  const convertTargets = CONVERT_TARGETS[convertFrom]
 
   const parsed = useMemo(() => tryParseJson(sourceText), [sourceText])
   const parsedRight = useMemo(() => tryParseJson(rightText), [rightText])
@@ -216,7 +279,13 @@ export function ToolboxPanel({
     })
   }
 
+  const openPopup = (next: ResultPopup) => setPopup(next)
+
   const runConvert = () => {
+    if (!convertMode) {
+      flash('error', 'Escolha um par De → Para suportado.')
+      return
+    }
     let result: ConvertResult
     switch (convertMode) {
       case 'json-yaml':
@@ -278,9 +347,23 @@ export function ToolboxPanel({
 
   const onCodegen = () => {
     withParsed((value) => {
-      setCodeOut(generateCode(value, language))
-      flash('ok', 'Código gerado.')
+      const code = generateCode(value, language)
+      setCodeOut(code)
+      if (showSendToRight) {
+        onSendToRight?.(code)
+        flash('ok', 'Código gerado e enviado ao painel direito.')
+      } else {
+        flash('ok', 'Código gerado.')
+      }
     })
+  }
+
+  const onConvertFromChange = (from: ConvertFormat) => {
+    setConvertFrom(from)
+    const targets = CONVERT_TARGETS[from]
+    if (!targets.includes(convertTo)) {
+      setConvertTo(targets[0] ?? 'json')
+    }
   }
 
   const runTransform = () => {
@@ -373,7 +456,12 @@ export function ToolboxPanel({
     withParsed((value) => {
       const list = scanSensitive(value)
       setFindings(list)
-      setSecurityOut(list.length ? `${JSON.stringify(list, null, 2)}\n` : 'Nenhum dado sensível detectado.\n')
+      const text = list.length ? `${JSON.stringify(list, null, 2)}\n` : 'Nenhum dado sensível detectado.\n'
+      openPopup({
+        title: list.length ? `Segurança — ${list.length} alerta(s)` : 'Segurança — nada suspeito',
+        text,
+        allowSend: true,
+      })
       flash('ok', list.length ? `${list.length} alerta(s).` : 'Nada suspeito.')
     })
   }
@@ -381,7 +469,8 @@ export function ToolboxPanel({
   const onMask = () => {
     withParsed((value) => {
       const masked = maskSensitive(value)
-      setSecurityOut(`${JSON.stringify(masked, null, 2)}\n`)
+      const text = `${JSON.stringify(masked, null, 2)}\n`
+      openPopup({ title: 'Segurança — dados mascarados', text, allowSend: true })
       flash('ok', 'Dados mascarados.')
     })
   }
@@ -389,7 +478,8 @@ export function ToolboxPanel({
   const onMock = () => {
     withParsed((value) => {
       const mocked = generateMock(value, mockCount)
-      setMockOut(`${JSON.stringify(mocked, null, 2)}\n`)
+      const text = `${JSON.stringify(mocked, null, 2)}\n`
+      openPopup({ title: `Mock — ${mockCount} registro(s)`, text, allowSend: true })
       flash('ok', 'Mock gerado.')
     })
   }
@@ -397,10 +487,15 @@ export function ToolboxPanel({
   const onSql = () => {
     withParsed((value) => {
       try {
-        setSqlOut(jsonToSql(value, { dialect: sqlDialect, table: sqlTable }))
+        const text = jsonToSql(value, { dialect: sqlDialect, table: sqlTable })
+        openPopup({
+          title: `SQL — ${sqlDialect}`,
+          text,
+          allowSend: true,
+          downloadFilename: `${sqlTable || 'items'}.sql`,
+        })
         flash('ok', 'SQL gerado.')
       } catch (err) {
-        setSqlOut('')
         flash('error', err instanceof Error ? err.message : 'Falha ao gerar SQL')
       }
     })
@@ -414,20 +509,26 @@ export function ToolboxPanel({
   })
 
   const onHttpSend = async () => {
-    setCurlOut('')
     const result = await executeHttpRequest(buildHttpRequest())
     if (result.ok === false) {
-      setHttpOut('')
       flash('error', result.error)
       return
     }
-    setHttpOut(formatHttpResponse(result))
+    openPopup({
+      title: `API — resposta ${result.status}`,
+      text: formatHttpResponse(result),
+      allowSend: true,
+    })
     flash('ok', `Resposta ${result.status}.`)
   }
 
   const onCurlGenerate = () => {
-    setHttpOut('')
-    setCurlOut(generateCurl(buildHttpRequest()))
+    openPopup({
+      title: 'API — cURL',
+      text: generateCurl(buildHttpRequest()),
+      allowSend: true,
+      downloadFilename: 'request.curl.sh',
+    })
     flash('ok', 'cURL gerado.')
   }
 
@@ -619,27 +720,31 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'transform') {
       return (
         <div className={styles.body}>
-          <p className={styles.hint}>Patch/Merge usam esquerda (base) e direita (alvo).</p>
-          <div className={styles.row}>
-            <label className={styles.label} htmlFor="transform-mode">
-              Operação
-            </label>
-            <select
-              id="transform-mode"
-              className={styles.inputGrow}
-              value={transformMode}
-              onChange={(e) => setTransformMode(e.target.value as typeof transformMode)}
-            >
-              <option value="flatten">Flatten</option>
-              <option value="unflatten">Unflatten</option>
-              <option value="sort-keys">Ordenar chaves</option>
-              <option value="sort-array">Ordenar array</option>
-              <option value="patch-diff">Gerar JSON Patch (L→R)</option>
-              <option value="patch-apply">Aplicar JSON Patch</option>
-              <option value="merge">Merge (L+R)</option>
-            </select>
-            <button type="button" className={styles.button} onClick={runTransform}>
-              Executar
+          <p className={styles.hint}>{TRANSFORM_HINT[transformMode]}</p>
+          <div className={styles.convertPair}>
+            <div className={styles.convertField}>
+              <label className={styles.label} htmlFor="transform-mode">
+                Operação
+              </label>
+              <select
+                id="transform-mode"
+                className={styles.input}
+                value={transformMode}
+                onChange={(e) => setTransformMode(e.target.value as typeof transformMode)}
+              >
+                <option value="flatten">Flatten (achatar)</option>
+                <option value="unflatten">Unflatten (aninhar)</option>
+                <option value="sort-keys">Ordenar chaves</option>
+                <option value="sort-array">Ordenar array</option>
+                <option value="patch-diff">Gerar JSON Patch (L→R)</option>
+                <option value="patch-apply">Aplicar JSON Patch</option>
+                <option value="merge">Merge (L+R)</option>
+              </select>
+            </div>
+          </div>
+          <div className={styles.stackActions}>
+            <button type="button" className={styles.buttonPrimary} onClick={runTransform}>
+              Transformar
             </button>
           </div>
           {transformMode === 'sort-keys' || transformMode === 'sort-array' ? (
@@ -706,27 +811,49 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'convert') {
       return (
         <div className={styles.body}>
-          <div className={styles.row}>
-            <label className={styles.label} htmlFor="convert-mode">
-              Conversão
-            </label>
-            <select
-              id="convert-mode"
-              className={styles.inputGrow}
-              value={convertMode}
-              onChange={(e) => setConvertMode(e.target.value as ConvertMode)}
-            >
-              <option value="json-yaml">JSON → YAML</option>
-              <option value="yaml-json">YAML → JSON</option>
-              <option value="json-xml">JSON → XML</option>
-              <option value="xml-json">XML → JSON</option>
-              <option value="json-csv">JSON → CSV</option>
-              <option value="csv-json">CSV → JSON</option>
-              <option value="json-toml">JSON → TOML</option>
-              <option value="toml-json">TOML → JSON</option>
-              <option value="json-markdown">JSON → Markdown</option>
-            </select>
-            <button type="button" className={styles.button} onClick={runConvert}>
+          <div className={styles.convertPair}>
+            <div className={styles.convertField}>
+              <label className={styles.label} htmlFor="convert-from">
+                De
+              </label>
+              <select
+                id="convert-from"
+                className={styles.input}
+                value={convertFrom}
+                onChange={(e) => onConvertFromChange(e.target.value as ConvertFormat)}
+              >
+                {(Object.keys(CONVERT_LABEL) as ConvertFormat[])
+                  .filter((format) => CONVERT_TARGETS[format].length > 0)
+                  .map((format) => (
+                    <option key={format} value={format}>
+                      {CONVERT_LABEL[format]}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <span className={styles.convertArrow} aria-hidden="true">
+              →
+            </span>
+            <div className={styles.convertField}>
+              <label className={styles.label} htmlFor="convert-to">
+                Para
+              </label>
+              <select
+                id="convert-to"
+                className={styles.input}
+                value={convertTo}
+                onChange={(e) => setConvertTo(e.target.value as ConvertFormat)}
+              >
+                {convertTargets.map((format) => (
+                  <option key={format} value={format}>
+                    {CONVERT_LABEL[format]}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className={styles.stackActions}>
+            <button type="button" className={styles.buttonPrimary} onClick={runConvert} disabled={!convertMode}>
               Converter
             </button>
           </div>
@@ -739,27 +866,32 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'codegen') {
       return (
         <div className={styles.body}>
-          <div className={styles.row}>
-            <label className={styles.label} htmlFor="codegen-lang">
-              Linguagem
-            </label>
-            <select
-              id="codegen-lang"
-              className={styles.input}
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as CodeLanguage)}
-            >
-              <option value="typescript">TypeScript</option>
-              <option value="csharp">C#</option>
-              <option value="java">Java</option>
-              <option value="python">Python</option>
-              <option value="go">Go</option>
-              <option value="kotlin">Kotlin</option>
-            </select>
-            <button type="button" className={styles.button} onClick={onCodegen}>
+          <div className={styles.convertPair}>
+            <div className={styles.convertField}>
+              <label className={styles.label} htmlFor="codegen-lang">
+                Linguagem
+              </label>
+              <select
+                id="codegen-lang"
+                className={styles.input}
+                value={language}
+                onChange={(e) => setLanguage(e.target.value as CodeLanguage)}
+              >
+                <option value="typescript">TypeScript</option>
+                <option value="csharp">C#</option>
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+                <option value="go">Go</option>
+                <option value="kotlin">Kotlin</option>
+              </select>
+            </div>
+          </div>
+          <div className={styles.stackActions}>
+            <button type="button" className={styles.buttonPrimary} onClick={onCodegen}>
               Gerar
             </button>
           </div>
+          <p className={styles.hint}>O código é enviado ao painel direito. Você também pode baixar o arquivo.</p>
           <textarea className={styles.textarea} value={codeOut} readOnly aria-label="Código gerado" />
           <ResultActions
             text={codeOut}
@@ -774,19 +906,18 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'security') {
       return (
         <div className={styles.body}>
-          <div className={styles.row}>
-            <button type="button" className={styles.button} onClick={onScan}>
-              Escanear
+          <p className={styles.hint}>Varre o JSON da esquerda em busca de dados sensíveis e mostra o resultado em um pop-up.</p>
+          <div className={styles.stackActions}>
+            <button type="button" className={styles.buttonPrimary} onClick={onScan}>
+              Verificar
             </button>
             <button type="button" className={styles.button} onClick={onMask}>
               Mascarar
             </button>
           </div>
           {findings.length > 0 ? (
-            <p className={styles.hint}>{findings.length} possível(is) dado(s) sensível(is).</p>
+            <p className={styles.hint}>Última verificação: {findings.length} possível(is) dado(s) sensível(is).</p>
           ) : null}
-          <textarea className={styles.textarea} value={securityOut} readOnly aria-label="Resultado de segurança" />
-          <ResultActions text={securityOut} showSendToRight={showSendToRight} onCopy={handleCopy} onSend={handleSend} />
         </div>
       )
     }
@@ -794,6 +925,7 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'mock') {
       return (
         <div className={styles.body}>
+          <p className={styles.hint}>Gera dados fictícios com a mesma forma do JSON da esquerda. O resultado abre em um pop-up.</p>
           <div className={styles.row}>
             <label className={styles.label} htmlFor="mock-count">
               Registros
@@ -807,12 +939,12 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
               value={mockCount}
               onChange={(e) => setMockCount(Number(e.target.value) || 1)}
             />
-            <button type="button" className={styles.button} onClick={onMock}>
+          </div>
+          <div className={styles.stackActions}>
+            <button type="button" className={styles.buttonPrimary} onClick={onMock}>
               Gerar mock
             </button>
           </div>
-          <textarea className={styles.textarea} value={mockOut} readOnly aria-label="Mock gerado" />
-          <ResultActions text={mockOut} showSendToRight={showSendToRight} onCopy={handleCopy} onSend={handleSend} />
         </div>
       )
     }
@@ -820,6 +952,7 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'sql') {
       return (
         <div className={styles.body}>
+          <p className={styles.hint}>Gera CREATE/INSERT a partir do JSON da esquerda. O SQL abre em um pop-up.</p>
           <div className={styles.row}>
             <label className={styles.label} htmlFor="sql-dialect">
               Dialeto
@@ -842,12 +975,12 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
               aria-label="Nome da tabela"
               placeholder="tabela"
             />
-            <button type="button" className={styles.button} onClick={onSql}>
+          </div>
+          <div className={styles.stackActions}>
+            <button type="button" className={styles.buttonPrimary} onClick={onSql}>
               Gerar SQL
             </button>
           </div>
-          <textarea className={styles.textarea} value={sqlOut} readOnly aria-label="SQL gerado" />
-          <ResultActions text={sqlOut} showSendToRight={showSendToRight} onCopy={handleCopy} onSend={handleSend} />
         </div>
       )
     }
@@ -855,7 +988,7 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
     if (id === 'api') {
       return (
         <div className={styles.body}>
-          <p className={styles.hint}>Requisição no browser — APIs sem CORS podem falhar.</p>
+          <p className={styles.hint}>Requisição no browser — APIs sem CORS podem falhar. Resposta e cURL abrem em pop-up.</p>
           <div className={styles.row}>
             <label className={styles.label} htmlFor="http-method">
               Método
@@ -906,7 +1039,7 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
             onChange={(e) => setHttpBody(e.target.value)}
             aria-label="Corpo HTTP"
           />
-          <div className={styles.row}>
+          <div className={styles.stackActions}>
             <button type="button" className={styles.buttonPrimary} onClick={() => void onHttpSend()}>
               Enviar
             </button>
@@ -914,13 +1047,6 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
               Gerar cURL
             </button>
           </div>
-          <textarea className={styles.textarea} value={httpOut || curlOut} readOnly aria-label="Resposta HTTP ou cURL" />
-          <ResultActions
-            text={httpOut || curlOut}
-            showSendToRight={showSendToRight}
-            onCopy={handleCopy}
-            onSend={handleSend}
-          />
         </div>
       )
     }
@@ -957,6 +1083,18 @@ ${typeof inspect.value === 'string' ? inspect.value : formatJson(JSON.stringify(
           </div>
         ))}
       </div>
+
+      <ResultModal
+        open={Boolean(popup)}
+        title={popup?.title ?? ''}
+        text={popup?.text ?? ''}
+        showSendToRight={showSendToRight && Boolean(popup?.allowSend)}
+        downloadFilename={popup?.downloadFilename}
+        onCopy={handleCopy}
+        onSend={handleSend}
+        onDownload={handleDownload}
+        onClose={() => setPopup(null)}
+      />
     </section>
   )
 }
