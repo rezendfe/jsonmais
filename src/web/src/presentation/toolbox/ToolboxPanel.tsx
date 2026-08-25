@@ -575,7 +575,17 @@ export function ToolboxPanel({
     ['api', 'API'],
   ]
   /** Já no trilho entre painéis — só reaparecem em rotas SEO (`lockedTab`). */
-  const railHostedTabs = new Set<ToolboxTab>(['convert', 'security', 'mock', 'sql', 'api'])
+  const railHostedTabs = new Set<ToolboxTab>([
+    'query',
+    'convert',
+    'codegen',
+    'transform',
+    'schema',
+    'security',
+    'mock',
+    'sql',
+    'api',
+  ])
   const visibleTabs = lockedTab
     ? tabs.filter(([id]) => id === lockedTab)
     : tabs.filter(([id]) => !railHostedTabs.has(id))

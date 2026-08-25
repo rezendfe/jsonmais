@@ -212,7 +212,7 @@ export function EditorWorkspace() {
     if (compareOn) {
       return null
     }
-    return 'Role a página para ferramentas e compare. Atalhos: Ctrl+Shift+F/M/T.'
+    return 'Role a página para estatísticas. Atalhos: Ctrl+Shift+F/M/T.'
   }, [compareOn, message])
 
   return (

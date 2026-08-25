@@ -105,6 +105,11 @@
   background: transparent;
 }
 
+.actionButtonGhost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .iconButton:hover,
 .actionButton:hover,
 .actionButtonGhost:hover {
