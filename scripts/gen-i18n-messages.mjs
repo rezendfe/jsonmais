@@ -127,9 +127,6 @@ const pairs = {
     'Você formata, inspeciona em árvore ou tabela, transforma, valida schema e compara documentos no navegador. Tudo roda localmente — o conteúdo do editor nunca sai do seu device.',
     'Format, inspect in tree or table, transform, validate schema, and compare documents in the browser. Everything runs locally — editor content never leaves your device.',
   ],
-  'about.p2a': ['Inspirado nas capacidades livres de', 'Inspired by the free capabilities of'],
-  'about.p2b': [', com hub de ferramentas no espírito de portais como', ', with a tools hub in the spirit of portals like'],
-
   'how.title': ['Como funciona', 'How it works'],
   'how.lead': ['Três passos, do zero ao resultado — tudo no browser.', 'Three steps, from zero to result — all in the browser.'],
   'how.s1.title': ['Abra ou cole o JSON', 'Open or paste JSON'],

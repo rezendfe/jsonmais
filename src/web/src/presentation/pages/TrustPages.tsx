@@ -25,17 +25,6 @@ export function AboutPage() {
       <h1>{t('about.title')}</h1>
       <p className={styles.lead}>{t('about.lead')}</p>
       <p>{t('about.p1')}</p>
-      <p>
-        {t('about.p2a')}{' '}
-        <a href="https://jsoneditoronline.org/" rel="noopener noreferrer" target="_blank">
-          JSON Editor Online
-        </a>
-        {t('about.p2b')}{' '}
-        <a href="https://123tools.to/" rel="noopener noreferrer" target="_blank">
-          123tools
-        </a>
-        .
-      </p>
       <Link className={styles.cta} to="/">
         {t('common.openEditor')}
       </Link>
