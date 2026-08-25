@@ -17,7 +17,7 @@ Inferência recursiva de tipos a partir do sample (união de tipos em arrays). S
 
 ## Theme
 
-`prefers-color-scheme` + atributo `data-theme` em `document.documentElement`.
+Preferência explícita `light` | `dark` + atributo `data-theme` (sem modo system; ver `016`).
 
 ## Decisão
 

@@ -32,4 +32,4 @@
 
 ## ThemePreference
 
-`light` | `dark` | `system` — chave localStorage `jsonmais.theme.v1`.
+`light` | `dark` — chave localStorage `jsonmais.theme.v1` (sem `system`; ver `016`).

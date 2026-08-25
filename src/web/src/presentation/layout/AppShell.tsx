@@ -4,7 +4,6 @@ import { ensureClientSession } from '../../shared/session/clientSession'
 import {
   applyThemeToDocument,
   readThemePreference,
-  resolveTheme,
   writeThemePreference,
   type ThemePreference,
 } from '../../shared/theme/theme'
@@ -16,7 +15,7 @@ const FOOTER_TOOLS = TOOL_CATALOG.slice(0, 6)
 export function AppShell() {
   const location = useLocation()
   const isEditor = location.pathname === '/'
-  const [themePref, setThemePref] = useState<ThemePreference>('system')
+  const [themePref, setThemePref] = useState<ThemePreference>('light')
   const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
@@ -29,14 +28,8 @@ export function AppShell() {
   }, [])
 
   useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const apply = () => {
-      applyThemeToDocument(resolveTheme(themePref, media.matches))
-    }
-    apply()
+    applyThemeToDocument(themePref)
     writeThemePreference(window.localStorage, themePref)
-    media.addEventListener('change', apply)
-    return () => media.removeEventListener('change', apply)
   }, [themePref])
 
   useEffect(() => {
@@ -92,7 +85,6 @@ export function AppShell() {
                 aria-label="Tema"
                 onChange={(event) => setThemePref(event.target.value as ThemePreference)}
               >
-                <option value="system">Sistema</option>
                 <option value="light">Claro</option>
                 <option value="dark">Escuro</option>
               </select>

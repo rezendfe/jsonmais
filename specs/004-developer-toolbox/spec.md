@@ -18,7 +18,7 @@ Estender o workspace dual-panel com um **painel de ferramentas** client-side: An
 - Conversão JSON ↔ YAML, JSON ↔ XML, JSON ↔ CSV (quando a forma permitir)
 - Geração de código C#, TypeScript, Java e Python a partir do JSON
 - Pipeline: resultado da ferramenta alimenta o editor (direita por padrão)
-- Tema Light / Dark / System
+- Tema Light / Dark
 - Atalhos: formatar, compactar, abrir/fechar toolbox
 - Páginas SEO `/ferramentas/{slug}` com a mesma engine
 
@@ -94,7 +94,7 @@ Estender o workspace dual-panel com um **painel de ferramentas** client-side: An
 | RF-004-005 | Convert JSON→YAML/XML/CSV e reverse quando suportado |
 | RF-004-006 | Codegen C#, TypeScript, Java, Python |
 | RF-004-007 | Clipboard com feedback visual |
-| RF-004-008 | Tema light/dark/system |
+| RF-004-008 | Tema light/dark (refinado por `016-theme-light-dark`; sem system) |
 | RF-004-009 | Atalhos de teclado documentados na UI |
 | RF-004-010 | Rotas SEO: formatter, validator (info), jsonpath, jmespath, json-to-yaml, json-to-xml, json-to-csv, json-to-csharp, json-to-typescript, json-to-java, json-to-python |
 
