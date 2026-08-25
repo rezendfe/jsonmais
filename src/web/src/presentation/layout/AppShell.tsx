@@ -7,6 +7,9 @@ import {
   writeThemePreference,
   type ThemePreference,
 } from '../../shared/theme/theme'
+import { AdBannerRow } from '../ads/AdBannerRow'
+import { CookieBanner } from '../consent/CookieBanner'
+import { useConsent } from '../consent/consentContext'
 import { TOOL_CATALOG } from '../pages/toolCatalog'
 import styles from './AppShell.module.css'
 
@@ -17,6 +20,7 @@ export function AppShell() {
   const isEditor = location.pathname === '/'
   const [themePref, setThemePref] = useState<ThemePreference>('light')
   const headerRef = useRef<HTMLElement>(null)
+  const { openPreferences } = useConsent()
 
   useEffect(() => {
     ensureClientSession(window.localStorage)
@@ -95,6 +99,11 @@ export function AppShell() {
       <main className={`${styles.main} ${isEditor ? styles.mainWide : styles.mainNarrow}`}>
         <Outlet />
       </main>
+      <AdBannerRow
+        leftSlotId="bottom_left"
+        rightSlotId="bottom_right"
+        label="Anúncios na base"
+      />
       <footer className={styles.footer}>
         <div className={styles.footerGrid}>
           <div className={styles.footerBrand}>
@@ -142,6 +151,12 @@ export function AppShell() {
               <Link className={styles.footerLink} to="/privacidade">
                 Privacidade
               </Link>
+              <Link className={styles.footerLink} to="/cookies">
+                Cookies
+              </Link>
+              <button type="button" className={styles.footerButton} onClick={openPreferences}>
+                Gerenciar cookies
+              </button>
               <a
                 className={styles.footerLink}
                 href="https://solucoessimples.com.br"
@@ -155,6 +170,7 @@ export function AppShell() {
         </div>
         <p className={styles.copyright}>© {new Date().getFullYear()} Soluções Simples · JSON Mais</p>
       </footer>
+      <CookieBanner />
     </div>
   )
 }

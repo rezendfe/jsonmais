@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { ConsentProvider } from '../presentation/consent/ConsentProvider'
 import { AppShell } from '../presentation/layout/AppShell'
 
 const EditorPage = lazy(() =>
@@ -13,6 +14,9 @@ const HowItWorksPage = lazy(() =>
 )
 const PrivacyPage = lazy(() =>
   import('../presentation/pages/TrustPages').then((m) => ({ default: m.PrivacyPage })),
+)
+const CookiesPage = lazy(() =>
+  import('../presentation/pages/TrustPages').then((m) => ({ default: m.CookiesPage })),
 )
 const ToolsIndexPage = lazy(() =>
   import('../presentation/pages/ToolPages').then((m) => ({ default: m.ToolsIndexPage })),
@@ -28,18 +32,21 @@ function RouteFallback() {
 export function AppRouter() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<RouteFallback />}>
-        <Routes>
-          <Route element={<AppShell />}>
-            <Route index element={<EditorPage />} />
-            <Route path="ferramentas" element={<ToolsIndexPage />} />
-            <Route path="ferramentas/:slug" element={<ToolPage />} />
-            <Route path="sobre" element={<AboutPage />} />
-            <Route path="como-funciona" element={<HowItWorksPage />} />
-            <Route path="privacidade" element={<PrivacyPage />} />
-          </Route>
-        </Routes>
-      </Suspense>
+      <ConsentProvider>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route element={<AppShell />}>
+              <Route index element={<EditorPage />} />
+              <Route path="ferramentas" element={<ToolsIndexPage />} />
+              <Route path="ferramentas/:slug" element={<ToolPage />} />
+              <Route path="sobre" element={<AboutPage />} />
+              <Route path="como-funciona" element={<HowItWorksPage />} />
+              <Route path="privacidade" element={<PrivacyPage />} />
+              <Route path="cookies" element={<CookiesPage />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </ConsentProvider>
     </BrowserRouter>
   )
 }

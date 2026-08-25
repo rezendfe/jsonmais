@@ -16,11 +16,27 @@ Repositório GitHub: [rezendfe/jsonmais](https://github.com/rezendfe/jsonmais.gi
 
 O secret `AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_STONE_0167ED410` é criado quando o SWA é ligado ao GitHub.
 
+### App settings (ads proxy)
+
+A função gerenciada `GET /api/ads/creative` lê:
+
+| Setting | Exemplo |
+|---------|---------|
+| `ADS_ENABLED` | `true` |
+| `ADS_BASE_URL` | URL da Ads API Soluções Simples (sem barra final) |
+| `ADS_SISTEMA_KEY` | chave de sistema (nunca no git) |
+
+```powershell
+az staticwebapp appsettings set -n jsonmais -g SolucaoSimples --setting-names ADS_ENABLED=true ADS_BASE_URL=https://YOUR-ADS-API.azurewebsites.net ADS_SISTEMA_KEY=YOUR_KEY
+```
+
+O build do front usa `VITE_ADS_ENABLED=true` no workflow (flag de UI apenas).
+
 ### Fluxo
 
-1. Push na branch `main` alterando `src/web/**`
-2. GitHub Actions executa build em `src/web` (Oryx / `npm run build`)
-3. Artefatos de `dist/` são publicados no SWA
+1. Push na branch `main` alterando `src/web/**` ou `api/**`
+2. GitHub Actions executa build em `src/web` + funções em `api/`
+3. Artefatos de `dist/` e a API gerenciada são publicados no SWA
 
 ## API (legado)
 

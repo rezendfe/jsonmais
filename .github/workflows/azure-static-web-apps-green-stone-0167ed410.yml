@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'src/web/**'
+      - 'api/**'
       - '.github/workflows/azure-static-web-apps-green-stone-0167ed410.yml'
   pull_request:
     types: [opened, synchronize, reopened, closed]
@@ -13,6 +14,7 @@ on:
       - main
     paths:
       - 'src/web/**'
+      - 'api/**'
       - '.github/workflows/azure-static-web-apps-green-stone-0167ed410.yml'
 
 jobs:
@@ -44,12 +46,14 @@ jobs:
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
+        env:
+          VITE_ADS_ENABLED: 'true'
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GREEN_STONE_0167ED410 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
           app_location: src/web
-          api_location: ''
+          api_location: api
           output_location: dist
           github_id_token: ${{ steps.idtoken.outputs.result }}
 

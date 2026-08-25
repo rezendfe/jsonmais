@@ -214,7 +214,36 @@ export function PrivacyPage() {
       </section>
 
       <p>
-        Cookies de marketing, se existirem no futuro, só após consentimento (spec de cookies/ads).
+        Cookies de marketing e anúncios só após o seu consentimento. Detalhes em{' '}
+        <Link to="/cookies">Cookies</Link>.
+      </p>
+      <Link className={styles.cta} to="/">
+        Voltar ao editor
+      </Link>
+    </article>
+  )
+}
+
+export function CookiesPage() {
+  return (
+    <article className={styles.page}>
+      <p className={styles.brandSignal}>JSON Mais</p>
+      <h1>Cookies</h1>
+      <p className={styles.lead}>
+        Essenciais para o portal; marketing só com o seu aceite.
+      </p>
+      <p>
+        Cookies essenciais guardam a preferência de consentimento e apoiam o funcionamento local do
+        site. O identificador anônimo (`jsonmais_client_id`) fica em localStorage neste dispositivo.
+      </p>
+      <p>
+        Cookies e scripts de marketing (incluindo anúncios) só são carregados depois que você
+        aceita Marketing no banner de cookies. Você pode rejeitar e continuar usando o editor — o
+        documento JSON nunca sai do navegador.
+      </p>
+      <p>
+        Altere a escolha a qualquer momento pelo link <strong>Gerenciar cookies</strong> no rodapé
+        ou pela página de <Link to="/privacidade">Privacidade</Link>.
       </p>
       <Link className={styles.cta} to="/">
         Voltar ao editor

@@ -1,0 +1,176 @@
+.banner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 1rem clamp(1rem, 3vw, 2rem) 1.25rem;
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.18);
+}
+
+.bannerInner {
+  width: min(960px, 100%);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.dialog {
+  width: min(32rem, 100%);
+  max-height: min(90dvh, 40rem);
+  overflow: auto;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: var(--panel-bg, #fff);
+  color: var(--ink);
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.22);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  font-size: 1.35rem;
+  line-height: 1.25;
+}
+
+.banner .title {
+  color: #f8fafc;
+}
+
+.text {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: inherit;
+  opacity: 0.92;
+}
+
+.links {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.links a {
+  color: #67e8f9;
+  text-underline-offset: 0.15em;
+}
+
+.dialog .links a {
+  color: var(--brand);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.primary,
+.secondary {
+  appearance: none;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 0.55rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--brand, #0d9488);
+  color: #fff;
+}
+
+.primary:hover {
+  filter: brightness(1.08);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible,
+.switch input:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+.secondary {
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(248, 250, 252, 0.35);
+}
+
+.dialog .secondary {
+  border-color: rgba(15, 23, 42, 0.2);
+  color: var(--ink);
+}
+
+.secondary:hover {
+  background: rgba(248, 250, 252, 0.08);
+}
+
+.dialog .secondary:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.categories {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.categories li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.categories li div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.categories li span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.locked {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.switchLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}

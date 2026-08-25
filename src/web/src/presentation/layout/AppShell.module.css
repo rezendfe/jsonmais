@@ -8,7 +8,7 @@
 .shellMarketing {
   min-height: 100dvh;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr auto auto;
 }
 
 /* Editor: editor fills first viewport; tools/compare/footer scroll below */
@@ -183,6 +183,28 @@
 
 .footerLink:hover {
   color: var(--brand-strong);
+}
+
+.footerButton {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--footer-ink);
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  opacity: 0.92;
+}
+
+.footerButton:hover {
+  color: var(--brand-strong);
+}
+
+.footerButton:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
 }
 
 .copyright {
