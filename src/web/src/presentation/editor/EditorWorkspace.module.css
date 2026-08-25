@@ -5,8 +5,8 @@
 
 .editorViewport {
   flex: 0 0 auto;
-  height: calc(100dvh - var(--header-h, 72px));
-  min-height: calc(100dvh - var(--header-h, 72px));
+  height: calc(100dvh - var(--header-h, 114px));
+  min-height: calc(100dvh - var(--header-h, 114px));
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
@@ -15,7 +15,7 @@
 
 .belowFold {
   flex: 0 0 auto;
-  scroll-margin-top: calc(var(--header-h, 72px) + 0.5rem);
+  scroll-margin-top: calc(var(--header-h, 114px) + 0.5rem);
   padding-bottom: 1rem;
 }
 

@@ -31,7 +31,7 @@ html[data-theme='light'] {
     linear-gradient(180deg, #f7fafc 0%, #eef3f7 100%);
   --header-bg: rgba(255, 255, 255, 0.86);
   --hero-panel: linear-gradient(145deg, #0f766e 0%, #0e7490 55%, #155e75 100%);
-  --header-h: 72px;
+  --header-h: 114px;
   font-family: var(--font-sans);
   line-height: 1.5;
   color: var(--ink);

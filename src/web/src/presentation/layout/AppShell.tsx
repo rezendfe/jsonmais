@@ -64,8 +64,8 @@ export function AppShell() {
               className={styles.logo}
               src="/logo.png"
               alt="JSon+"
-              width={80}
-              height={62}
+              width={120}
+              height={93}
             />
           </Link>
           <nav className={styles.nav} aria-label="Principal">
@@ -111,8 +111,8 @@ export function AppShell() {
               className={styles.footerLogo}
               src="/logo.png"
               alt="JSon+"
-              width={82}
-              height={64}
+              width={123}
+              height={96}
             />
             <p className={styles.footerNote}>
               Canivete suíço JSON local-first. O documento nunca sai do seu navegador.
