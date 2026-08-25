@@ -6,4 +6,4 @@
 - [x] Shell, marketing, catálogo, cookies CMP e chrome do editor traduzidos
 - [x] `html[lang]` e title acompanham locale
 - [x] Vitest i18n + build web OK
-- [ ] Deploy SWA disparado
+- [x] Deploy SWA disparado (push `2755987` → main)
