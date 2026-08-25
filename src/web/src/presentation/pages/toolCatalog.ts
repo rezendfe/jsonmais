@@ -104,7 +104,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     description: 'Detecte possíveis dados sensíveis no JSON.',
     tab: 'security',
     category: 'Segurança',
-    blurb: 'Escanear lista caminhos suspeitos; Mascarar ofusca valores.',
+    blurb: 'No trilho entre os painéis: Verificar lista caminhos suspeitos; Mascarar ofusca valores.',
   },
   {
     slug: 'mask',
@@ -112,7 +112,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     description: 'Mascarar e-mails, tokens e outros padrões sensíveis.',
     tab: 'security',
     category: 'Segurança',
-    blurb: 'Use Mascarar e envie o resultado ao editor no workspace.',
+    blurb: 'No editor, use Mascarar no trilho central (Segurança).',
   },
   {
     slug: 'mock',
@@ -120,7 +120,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     description: 'Gere dados fictícios a partir da estrutura do sample.',
     tab: 'mock',
     category: 'Mock',
-    blurb: 'Informe a quantidade (1–1000) e gere o mock localmente.',
+    blurb: 'No trilho entre os painéis: informe a quantidade e clique em Gerar.',
   },
   {
     slug: 'json-to-sql',
@@ -129,7 +129,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     tab: 'sql',
     category: 'SQL',
     sqlDialect: 'sqlite',
-    blurb: 'Escolha o dialeto e o nome da tabela.',
+    blurb: 'Escolha o dialeto no trilho entre os painéis e clique em Gerar.',
   },
   {
     slug: 'json-to-yaml',
@@ -138,7 +138,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     tab: 'convert',
     category: 'Converter',
     convertMode: 'json-yaml',
-    blurb: 'Use JSON → YAML ou YAML → JSON na aba Converter.',
+    blurb: 'No trilho central: De → Para (JSON/YAML) e Converter.',
   },
   {
     slug: 'json-to-xml',
@@ -147,7 +147,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     tab: 'convert',
     category: 'Converter',
     convertMode: 'json-xml',
-    blurb: 'Use JSON → XML ou XML → JSON.',
+    blurb: 'No trilho central: De → Para (JSON/XML) e Converter.',
   },
   {
     slug: 'json-to-csv',
@@ -156,7 +156,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     tab: 'convert',
     category: 'Converter',
     convertMode: 'json-csv',
-    blurb: 'CSV exige array de objetos planos.',
+    blurb: 'No trilho central: De → Para (JSON/CSV). CSV exige array de objetos planos.',
   },
   {
     slug: 'json-to-toml',
@@ -165,7 +165,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     tab: 'convert',
     category: 'Converter',
     convertMode: 'json-toml',
-    blurb: 'TOML exige objeto na raiz.',
+    blurb: 'No trilho central: De → Para (JSON/TOML). TOML exige objeto na raiz.',
   },
   {
     slug: 'json-to-markdown',
@@ -174,7 +174,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     tab: 'convert',
     category: 'Converter',
     convertMode: 'json-markdown',
-    blurb: 'Útil para colar em READMEs e docs.',
+    blurb: 'No trilho central: De → Para (JSON/Markdown).',
   },
   {
     slug: 'json-to-csharp',
@@ -236,7 +236,7 @@ export const TOOL_CATALOG: ToolDef[] = [
     description: 'Envie requisições HTTP no browser e carregue a resposta.',
     tab: 'api',
     category: 'API',
-    blurb: 'GET/POST/PUT/PATCH/DELETE com headers e body. Respeite CORS.',
+    blurb: 'No trilho central: Abrir API, enviar a requisição e ver a resposta no pop-up.',
   },
   {
     slug: 'curl-generator',
@@ -244,6 +244,6 @@ export const TOOL_CATALOG: ToolDef[] = [
     description: 'Gere comando cURL a partir de uma requisição HTTP.',
     tab: 'api',
     category: 'API',
-    blurb: 'Monte a requisição na aba API e clique em Gerar cURL.',
+    blurb: 'No trilho central: Abrir API e Gerar cURL.',
   },
 ]

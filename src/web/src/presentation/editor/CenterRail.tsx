@@ -216,7 +216,6 @@ export function CenterRail({
       setPopup({
         title: findings.length ? `Segurança — ${findings.length} alerta(s)` : 'Segurança — nada suspeito',
         text,
-        allowSend: true,
       })
     })
   }
@@ -226,7 +225,6 @@ export function CenterRail({
       setPopup({
         title: 'Segurança — mascarado',
         text: `${JSON.stringify(maskSensitive(value), null, 2)}\n`,
-        allowSend: true,
       })
     })
   }
@@ -285,7 +283,6 @@ export function CenterRail({
         headers: parseHeadersText(httpHeaders),
         body: httpBody || undefined,
       }),
-      allowSend: true,
       downloadFilename: 'request.curl.sh',
     })
   }

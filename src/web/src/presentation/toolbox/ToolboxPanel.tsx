@@ -460,7 +460,6 @@ export function ToolboxPanel({
       openPopup({
         title: list.length ? `Segurança — ${list.length} alerta(s)` : 'Segurança — nada suspeito',
         text,
-        allowSend: true,
       })
       flash('ok', list.length ? `${list.length} alerta(s).` : 'Nada suspeito.')
     })
@@ -470,7 +469,7 @@ export function ToolboxPanel({
     withParsed((value) => {
       const masked = maskSensitive(value)
       const text = `${JSON.stringify(masked, null, 2)}\n`
-      openPopup({ title: 'Segurança — dados mascarados', text, allowSend: true })
+      openPopup({ title: 'Segurança — dados mascarados', text })
       flash('ok', 'Dados mascarados.')
     })
   }
@@ -526,7 +525,6 @@ export function ToolboxPanel({
     openPopup({
       title: 'API — cURL',
       text: generateCurl(buildHttpRequest()),
-      allowSend: true,
       downloadFilename: 'request.curl.sh',
     })
     flash('ok', 'cURL gerado.')
@@ -567,7 +565,7 @@ export function ToolboxPanel({
   const tabs: Array<[ToolboxTab, string]> = [
     ['analyze', 'Analisar'],
     ['query', 'Consultar'],
-    ['transform', 'Transformar'],
+    ['transform', 'Patch / Flatten'],
     ['schema', 'Schema'],
     ['convert', 'Converter'],
     ['codegen', 'Gerar'],
@@ -576,7 +574,11 @@ export function ToolboxPanel({
     ['sql', 'SQL'],
     ['api', 'API'],
   ]
-  const visibleTabs = lockedTab ? tabs.filter(([id]) => id === lockedTab) : tabs
+  /** Já no trilho entre painéis — só reaparecem em rotas SEO (`lockedTab`). */
+  const railHostedTabs = new Set<ToolboxTab>(['convert', 'security', 'mock', 'sql', 'api'])
+  const visibleTabs = lockedTab
+    ? tabs.filter(([id]) => id === lockedTab)
+    : tabs.filter(([id]) => !railHostedTabs.has(id))
 
   const toggleTab = (id: ToolboxTab) => {
     if (lockedTab) return
