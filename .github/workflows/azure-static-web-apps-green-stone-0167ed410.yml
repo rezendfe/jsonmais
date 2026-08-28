@@ -8,6 +8,7 @@ on:
       - 'src/web/**'
       - 'api/**'
       - '.github/workflows/azure-static-web-apps-green-stone-0167ed410.yml'
+  workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
